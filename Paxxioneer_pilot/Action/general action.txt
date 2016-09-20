@@ -1,4 +1,4 @@
-*** Settings ***
+﻿*** Settings ***
 Resource          ../Interfaces/homepage.txt
 Resource          ../Interfaces/login_form.txt
 Library           ExtendedSelenium2Library
@@ -17,7 +17,7 @@ Resource          ../Interfaces/your_booking_page.txt
 
 *** Keywords ***
 open paxxioneer
-    Open Browser    http://staging.paxxioneer.cvp.io/    gc
+    Open Browser    http://staging.paxxioneer.cvp.io/    ff
     Maximize Browser Window
     Wait Until Element Is Visible    ${login button}
 
