@@ -1,0 +1,6 @@
+*** Variables ***
+${cm_header_meet paxxioneer link}    //a[@href="/paxxioneers" and contains(text(),"Meet paxxioneers")]
+${cm_header_faq link}    //a[@href="/frequently-asked-questions" and contains(text(),"FAQ")]
+${cm_header_sign up link}    //a[@class="PopUpSignUp_open" and contains(text(),"Sign Up")]
+${cm_header_login link}    //a[@class="PopUpLogin_open" and contains(text(),"Log In")]
+${cm_header_logo}    //span[@class="logo"]

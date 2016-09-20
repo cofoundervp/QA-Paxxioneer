@@ -1,0 +1,22 @@
+*** Variables ***
+${homepage_animated gif}    //img[@src="assets/images/SiteGraphic_GIF_001-16b696ba4d.gif"]
+${homepage_paragraph next to gif image}    //p[@class=""]
+${homepage_why paxxioneer link}    //a[@class="text-link" and contains(text(),"Why Paxxioneer?")]    # This link is placed in the body of page. Under the jumping gif
+${homepage_meet passionate people logo}    //img[@src="assets/images/ico_meet-317fce1060.png"]
+${homepage_meet passionate peole header}    //h4[contains(text(),"Meet passionate people")]
+${homepage_meet passionate people body text}    //p[@class="small" and contains(text(),"There are people who are brilliant at what they do")]
+${homepage_meet passionate people learn more link}    //a[@class="text-link" and @href="/meet-paxxionate"]
+${homepage_make your journey meaningful header}    //h4[contains(text(),"Make your journey meaningful")]
+${homepage_make your journey meaningful logo}    //img[@src="assets/images/ico_journey-13bfba91b8.png"]
+${homepage_make your journey meaningful body text}    //p[@class="small" and contains(text(),"Discovering new places is fun. Even travel that consists of little")]
+${homepage_make your journey meaningful learn more link}    //a[@class="text-link" and @href="/make-journey-meaningful"]
+${homepage_share your passions logo}    //img[@src="assets/images/ico_share-fed0797c75.png"]
+${homepage_share your passions header}    //h4[contains(text(),"Share your passions")]
+${homepage_share your passions body text}    //p[@class="small" and contains(text(),"You might not know that you're passionate")]
+${homepage_share your passions learn more link}    //a[@class="text-link" and @href="/private-beta"]
+${homepage_the first paxxioneer in paxxioneer list}    //div[@class="spacer"]
+${homepage_subcribe image}    //img[@src="/assets/images/notify-e027fea5c3.png"]
+${homepage_subcribe text}    //span[contains(text(),"For more Paxxioneer's news")]
+${homepage_subcribe_popup body}    id=PopUpEDM
+${homepage_subcribe_email text box}    id=edm-email
+${homepage_header_meet paxxioneer}    //a[@href="/paxxioneers"]

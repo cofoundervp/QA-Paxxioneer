@@ -1,0 +1,9 @@
+*** Variables ***
+${cm_header_meet paxxioneer link}    //a[@href="/paxxioneers" and contains(text(),"Meet paxxioneers")]
+${cm_header_faq link}    //a[@href="/frequently-asked-questions" and contains(text(),"FAQ")]
+${cm_header_sign up link}    //a[@class="PopUpSignUp_open" and contains(text(),"Sign Up")]
+${cm_header_login link}    //a[@class="PopUpLogin_open" and contains(text(),"Log In")]
+${cm_header_logo}    //span[@class="logo"]
+${cm_header main menu button}    //button[@ng-click="isCollapsed = !isCollapsed"]
+${cm_username container}    //span[@class="username ng-binding"]
+${cm_header_logout}    //a[contains(text(),'Logout')]

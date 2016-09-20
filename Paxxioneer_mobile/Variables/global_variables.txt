@@ -1,0 +1,8 @@
+*** Variables ***
+${admin account}    admin
+${admin password}    admin12A
+${gb_email domain}    @mailinator.com
+${gb_password}    Abc123
+${gb_customer username}    default_customer_qa_auto
+${gb_customer email}    default_customer_qa_auto@mailinator.com
+${gb_paxxioneer username}    default_paxxioneer_qa_auto

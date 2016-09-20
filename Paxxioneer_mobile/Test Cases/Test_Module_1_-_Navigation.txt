@@ -1,0 +1,324 @@
+*** Settings ***
+Test Setup        start paxxioneer with default config
+Test Teardown     Close Application
+Resource          ../Keywords/resource config.txt
+
+*** Test Cases ***
+TM001_TC001_Verify user can open paxxioneer homepage
+    [Tags]    sanity
+    Comment    WRITE MESSAGE TO CONSOLE AND LOG FILE    Open paxxioneer home page in a new browser
+    Comment    open paxxioneer in a new browser    ${config_browser}    ${config_environment}    ${config_end domain}
+    # ===== VP ====== Verify Page title is "Home - Paxxioneer"
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Verifying home page title.
+    ${verify point}    Run Keyword And Return Status    Page Should Contain Text    Paxxioneer
+    VERIFY WITH ERROR HANDLE    ${verify point}    Homepage is opened    Homepage is not opened
+
+TM001_TC002_Verify clicking animated image navigate to "Why are we here?" page
+    [Tags]    sanity
+    [Setup]    start paxxioneer with default config
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Paxxioneer opened. Wait until gif image present
+    global cooldown
+    Wait Until Page Contains Element    ${homepage_animated gif}
+    # Click gif image
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Click gif image
+    Click Element    ${homepage_animated gif}
+    # ===== VP ====== Verify page title is "Why are we here? - Paxxioneer"
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Verifying page title
+    ${verify point}    Run Keyword And Return Status    Page Should Contain Text    Why are we here?
+    VERIFY WITH ERROR HANDLE    ${verify point}    Page title is corrected    Page title is not corrected
+
+TM001_TC003_Verify text next to animated gif
+    [Documentation]    Verify if the text paragraph is present.
+    ...
+    ...    This test case is not verify the text is correct or not
+    [Tags]    sanity
+    [Setup]    start paxxioneer with default config
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Wait for the gif image is present
+    Wait Until Page Contains Element    ${homepage_animated gif}
+    # ===== VP ====== Verify there is a paragraph next to the gif
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Verify there is a paragraph next to the gif
+    ${verify point}    Run Keyword And Return Status    Page Should Contain Element    ${homepage_paragraph next to gif image}
+    VERIFY WITH ERROR HANDLE    ${verify point}    Paragraph is present    Paragraph not found
+    # Additional info
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    This test case is not verify if the text in paragraph is corrected or not
+    # verify if the strong text "Let's celebrate passions togother." is present
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    verify if the strong text "Let's celebrate passions togother." is present
+    ${verify point}    Run Keyword And Return Status    Page Should Contain Element    //strong[contains(text(),"Let’s celebrate passions together.")]
+    VERIFY WITH ERROR HANDLE    ${verify point}    Strong text "Let's celebrate passions togother." is presented    Strong text "Let's celebrate passions togother." is not presented
+
+TM001_TC004_Verify "What is Paxxioneer" link is present and navigated to correct page
+    [Tags]    noie    sanity
+    [Setup]    start paxxioneer with default config
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Wait for the gif image is present
+    Wait Until Page Contains Element    ${homepage_animated gif}
+    # ===== VP ====== Verify Why Paxxioneer link is present
+    ${verify point}    Run Keyword And Return Status    Page Should Contain Element    ${homepage_what is paxxioneer link}
+    VERIFY WITH ERROR HANDLE    ${verify point}    Link is presented    Link is not presented
+    # Click the URL
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Click Why Paxxioneer link
+    scroll and click    //strong[contains(text(),"Let’s celebrate passions together.")]    ${homepage_what is paxxioneer link}
+    # ===== VP ====== Verify page title is "Why Paxxioneer - Paxxioneer"
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Verify page title
+    ${verify point}    Run Keyword And Return Status    Page Should Contain Text    Why are we here?
+    VERIFY WITH ERROR HANDLE    ${verify point}    Page title is "Why Paxxioneer - Paxxioneer"    Page title is not correct
+
+TM001_TC005_Verify 3 links next to Why Paxxioneer link are: "Meet passionate people", "Make your journey meaningful" and "Share your passions"
+    [Tags]    sanity
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Wait for the gif image is present
+    Wait Until Page Contains Element    ${homepage_animated gif}
+    # scroll page to make why paxxioneer section shows
+    Comment    Scroll Down    ${homepage_what is paxxioneer link}
+    # ===== VP ====== VERIFY POINTS FOR MEET YOUR PASSIONATE PEOPLE GROUP
+    # verify logo is presented
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Verify if the logo of "meet your passionate people" present
+    ${vp}    Run Keyword And Return Status    Page Should Contain Element    ${homepage_meet passionate people logo}
+    VERIFY WITH ERROR HANDLE    ${vp}    Logo is presented    Logo is not presented
+    # verify header is presented
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Verify if the header of "meet your passionate people" present
+    ${vp}    Run Keyword And Return Status    Page Should Contain Element    ${homepage_meet passionate peole header}
+    VERIFY WITH ERROR HANDLE    ${vp}    Header is presented    Header is not presented
+    # verify body text is presented
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Verify if the body text of "meet your passionate people" present
+    ${vp}    Run Keyword And Return Status    Page Should Contain Element    ${homepage_meet passionate people body text}
+    VERIFY WITH ERROR HANDLE    ${vp}    Body text is presented    Body text is not presented    #this is not verify the text is corrected
+    # verify learn more is presented
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Verify if the learn more link of "meet your passionate people" present
+    ${vp}    Run Keyword And Return Status    Page Should Contain Element    ${homepage_meet passionate people learn more link}
+    VERIFY WITH ERROR HANDLE    ${vp}    Learn more for "meet your passionate people" is presented    Learn more for "meet your passionate people" is not presented
+    # ===== VP ====== VERIFY POINTS FOR MAKE YOUR JOURNEY MEANINGFUL GROUP
+    # verify logo is presented
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Verify if the logo of "make your journey meaningful" present
+    ${vp}    Run Keyword And Return Status    Page Should Contain Element    ${homepage_make your journey meaningful logo}
+    VERIFY WITH ERROR HANDLE    ${vp}    Logo is presented    Logo is not presented
+    # verify header is presented
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Verify if the header of "make your journey meaningful" present
+    ${vp}    Run Keyword And Return Status    Page Should Contain Element    ${homepage_make your journey meaningful header}
+    VERIFY WITH ERROR HANDLE    ${vp}    Header is presented    Header is not presented
+    # verify body text is presented
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Verify if the body text of "make your journey meaningful" present
+    ${vp}    Run Keyword And Return Status    Page Should Contain Element    ${homepage_make your journey meaningful body text}
+    VERIFY WITH ERROR HANDLE    ${vp}    Body text is presented    Body text is not presented    #this is not verify the text is corrected
+    # verify learn more is presented
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Verify if the learn more link of "make your journey meaningful" present
+    ${vp}    Run Keyword And Return Status    Page Should Contain Element    ${homepage_make your journey meaningful learn more link}
+    VERIFY WITH ERROR HANDLE    ${vp}    Learn more for "make your journey meaningful" is presented    Learn more for "make your journey meaningful" is not presented
+    # ===== VP ====== VERIFY POINTS FOR SHARE YOUR PASSIONS GROUP
+    # verify logo is presented
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Verify if the logo of "share your passions" present
+    ${vp}    Run Keyword And Return Status    Page Should Contain Element    ${homepage_share your passions logo}
+    VERIFY WITH ERROR HANDLE    ${vp}    Logo is presented    Logo is not presented
+    # verify header is presented
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Verify if the header of "share your passions" present
+    ${vp}    Run Keyword And Return Status    Page Should Contain Element    ${homepage_share your passions header}
+    VERIFY WITH ERROR HANDLE    ${vp}    Header is presented    Header is not presented
+    # verify body text is presented
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Verify if the body text of "share your passions" present
+    ${vp}    Run Keyword And Return Status    Page Should Contain Element    ${homepage_share your passions body text}
+    VERIFY WITH ERROR HANDLE    ${vp}    Body text is presented    Body text is not presented    #this is not verify the text is corrected
+    # verify learn more is presented
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Verify if the learn more link of "share your passions" present
+    ${vp}    Run Keyword And Return Status    Page Should Contain Element    ${homepage_share your passions learn more link}
+    VERIFY WITH ERROR HANDLE    ${vp}    Learn more for "share your passions" is presented    Learn more for "share your passions" is not presented
+
+TM001_TC006_Verify logos and article names are navigate to correct page
+    [Tags]    sanity
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Wait for the gif image is present
+    Wait Until Page Contains Element    ${homepage_animated gif}
+    # ===== VP ====== VERIFY POINTS FOR MEET YOUR PASSIONATE PEOPLE GROUP
+    # click logo
+    scroll and click    ${homepage_what is paxxioneer link}    ${homepage_meet passionate people logo}
+    # verify page title is correct
+    ${vp}    Run Keyword And Return Status    Page Should Contain Text    Meet passionate people
+    VERIFY WITH ERROR HANDLE    ${vp}    Click logo navigate to correct page    Incorrect page displays
+    # go back
+    Go Back
+    global cooldown
+    # click header
+    scroll and click    ${homepage_what is paxxioneer link}    ${homepage_meet passionate peole header}
+    # verify page title is correct
+    ${vp}    Run Keyword And Return Status    Page Should Contain Text    Meet passionate people
+    VERIFY WITH ERROR HANDLE    ${vp}    Click logo navigate to correct page    Incorrect page displays
+    # go back
+    Go Back
+    global cooldown
+    # click body text
+    scroll and click    ${homepage_what is paxxioneer link}    ${homepage_meet passionate people body text}
+    # verify page title is correct
+    ${vp}    Run Keyword And Return Status    Page Should Contain Text    Meet passionate people
+    VERIFY WITH ERROR HANDLE    ${vp}    Click logo navigate to correct page    Incorrect page displays
+    # go back
+    Go Back
+    global cooldown
+    # click header
+    scroll and click    ${homepage_what is paxxioneer link}    ${homepage_meet passionate people learn more link}
+    # verify page title is correct
+    ${vp}    Run Keyword And Return Status    Page Should Contain Text    Meet passionate people
+    VERIFY WITH ERROR HANDLE    ${vp}    Click logo navigate to correct page    Incorrect page displays
+    # go back
+    Go Back
+    global cooldown
+    # ===== VP ====== VERIFY POINTS FOR MAKE YOUR JOURNEY MEANINGFUL GROUP
+    # click logo
+    scroll and click    ${homepage_what is paxxioneer link}    ${homepage_make your journey meaningful logo}
+    # verify page title is correct
+    ${vp}    Run Keyword And Return Status    Page Should Contain Text    Make your journey meaningful
+    VERIFY WITH ERROR HANDLE    ${vp}    Click logo navigate to correct page    Incorrect page displays
+    # go back
+    Go Back
+    global cooldown
+    # click header
+    scroll and click    ${homepage_what is paxxioneer link}    ${homepage_make your journey meaningful header}
+    # verify page title is correct
+    ${vp}    Run Keyword And Return Status    Page Should Contain Text    Make your journey meaningful
+    VERIFY WITH ERROR HANDLE    ${vp}    Click logo navigate to correct page    Incorrect page displays
+    # go back
+    Go Back
+    global cooldown
+    # click body text
+    scroll and click    ${homepage_what is paxxioneer link}    ${homepage_make your journey meaningful body text}
+    # verify page title is correct
+    ${vp}    Run Keyword And Return Status    Page Should Contain Text    Make your journey meaningful
+    VERIFY WITH ERROR HANDLE    ${vp}    Click logo navigate to correct page    Incorrect page displays
+    # go back
+    Go Back
+    global cooldown
+    # click header
+    scroll and click    ${homepage_what is paxxioneer link}    ${homepage_make your journey meaningful learn more link}
+    # verify page title is correct
+    ${vp}    Run Keyword And Return Status    Page Should Contain Text    Make your journey meaningful
+    VERIFY WITH ERROR HANDLE    ${vp}    Click logo navigate to correct page    Incorrect page displays
+    # go back
+    Go Back
+    global cooldown
+    # ===== VP ====== VERIFY POINTS FOR SHARE YOUR PASSIONS GROUP
+    # click logo
+    scroll and click    ${homepage_what is paxxioneer link}    ${homepage_share your passions logo}
+    # verify page title is correct
+    ${vp}    Run Keyword And Return Status    Page Should Contain Text    Become a paxxioneer!
+    VERIFY WITH ERROR HANDLE    ${vp}    Click logo navigate to correct page    Incorrect page displays
+    # go back
+    Go Back
+    global cooldown
+    # click header
+    scroll and click    ${homepage_what is paxxioneer link}    ${homepage_share your passions header}
+    # verify page title is correct
+    ${vp}    Run Keyword And Return Status    Page Should Contain Text    Become a paxxioneer!
+    VERIFY WITH ERROR HANDLE    ${vp}    Click logo navigate to correct page    Incorrect page displays
+    # go back
+    Go Back
+    global cooldown
+    # click body text
+    scroll and click    ${homepage_what is paxxioneer link}    ${homepage_share your passions body text}
+    # verify page title is correct
+    ${vp}    Run Keyword And Return Status    Page Should Contain Text    Become a paxxioneer!
+    VERIFY WITH ERROR HANDLE    ${vp}    Click logo navigate to correct page    Incorrect page displays
+    # go back
+    Go Back
+    global cooldown
+    # click header
+    scroll and click    ${homepage_what is paxxioneer link}    ${homepage_share your passions learn more link}
+    # verify page title is correct
+    ${vp}    Run Keyword And Return Status    Page Should Contain Text    Become a paxxioneer!
+    VERIFY WITH ERROR HANDLE    ${vp}    Click logo navigate to correct page    Incorrect page displays
+    # go back
+    Go Back
+    global cooldown
+
+TM001_TC007_Verify below "Why Paxxioneers?" section is sort paxxioneer list
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Wait for the gif image is present
+    Wait Until Element Is Visible    ${homepage_animated gif}
+    # verify paxxioneer list is present
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Verifying if paxxioneer list section in homepage is present
+    ${vp}    Run Keyword And Return Status    Element Should Be Visible    //section[@class="regular staff-pick background list-insider list-featured-insider"]
+    VERIFY WITH ERROR HANDLE    ${vp}    Paxxioneer list section in homepage is presented    Paxxioneer list section in homepage is not presented
+
+TM001_TC008_Verify 21 paxxioneers are listed in Homepage
+    [Documentation]    Pre-conditions:
+    ...
+    ...    This test cases are true if we have over 21 paxxioneers in system.
+    ...
+    ...    In case test case failed by not enough paxxioneer. Please check the available paxxioneer in system.
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Open login form, then login with admin account
+    open login form and login    ${admin account}    ${admin password}
+    # wait for the first disable button shows
+    Wait Until Element Is Visible    ${admin page_manage paxxioneer_the first disable button}
+    # get number of row in Manage Paxxioneer table
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Get the number of paxxioneer that is showning on Manage Paxxioneer page
+    ${tc_number of paxxioneer in current page}    Get Matching Xpath Count    ${admin page_xpath of row}
+    # Fail test case if the number of paxxioneer is lower than 22
+    Run Keyword If    ${tc_number of paxxioneer in current page} < 22    Fail    Not enough paxxioneer to verify
+    # go back to home page
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Go back to homepage
+    Click Element    ${cm_header_logo}
+    Wait Until Element Is Visible    ${homepage_animated gif}
+    # get number of paxxioneer that are shown in Homepage
+    ${number of paxxioneer shows in home page}    Get Matching Xpath Count    //div[@class="spacer"]
+    # assgin ${vp} = True if there are 21 xpath //div[@class="spacer"] are found, otherwise, set ${vp} = False
+    ${vp}    Set Variable If    ${number of paxxioneer shows in home page} == 21    True
+    ${vp}    Set Variable If    ${number of paxxioneer shows in home page} != 21    False
+    # ===== VP ====== Verify 21 paxxioneers are shown ( ${vp} == 21 )
+    VERIFY WITH ERROR HANDLE    ${vp}    21 paxxioneers show on homepage    There are less or more than 21 paxxioneers on homepage
+
+TM001_TC009_Verify clicking on paxxioneer card will open paxxioneer's profile page
+    [Tags]
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Wait for the gif image is present
+    Wait Until Page Contains Element    ${homepage_animated gif}
+    ${url of the first paxxioneer in homepage thumbnail}    Get Element Attribute    //a[@ui-sref="insider.home({username:insider.username, ref:'logo'})"]@href
+    scroll and click    ${homepage_make your journey meaningful learn more link}    ${homepage_the first paxxioneer in paxxioneer list}
+    global cooldown
+    ${real URL after clicking}    Get Location
+    ${vp}    Run Keyword And Return Status    Should Be Equal    ${url of the first paxxioneer in homepage thumbnail}    ${real URL after clicking}
+    VERIFY WITH ERROR HANDLE    ${vp}    Clicking on avatar of paxxioneer in Homepage will open Profile page of that paxxioneer    A different URL is opened
+
+TM001_TC010_Verify More button is shown below paxxioneer list if there are more than 21 active paxxioneer
+    [Documentation]    Wait for bug fixing
+    [Tags]    pending
+
+TM001_TC011_Verify subcribing section is presented and subcribing form is opened after clicking image or text
+    # ===== VP ====== Veriry subcribe image is shown
+    ${vp}    Run Keyword And Return Status    Element Should Be Visible    ${homepage_subcribe image}
+    VERIFY WITH ERROR HANDLE    ${vp}    Image is shown    Image is not shown
+    # ===== VP ====== Veriry subcribe text is shown
+    ${vp}    Run Keyword And Return Status    Element Should Be Visible    ${homepage_subcribe text}
+    VERIFY WITH ERROR HANDLE    ${vp}    Text is shown    Text is not shown
+    # Click subcribe image
+    Click Element    ${homepage_subcribe image}
+    # ===== VP ====== Verify subcribe form is shown after clicking image
+    ${vp}    Run Keyword And Return Status    Element Should Be Visible    ${homepage_subcribe_popup body}
+    VERIFY WITH ERROR HANDLE    ${vp}    Subcribe popup is shown    Subcribe popup is not shown
+    # close popup
+    Press Key    ${homepage_subcribe_email text box}    \\13
+    # Click subcribe text
+    Click Element    ${homepage_subcribe text}
+    # ===== VP ====== Verify subcribe form is shown after clicking text
+    ${vp}    Run Keyword And Return Status    Element Should Be Visible    ${homepage_subcribe_popup body}
+    VERIFY WITH ERROR HANDLE    ${vp}    Subcribe popup is shown    Subcribe popup is not shown
+
+TM001_TC012_Verify user is able to subcribe
+    [Tags]    pending
+
+TM001_TC013_Verify paxxioneer logo on header: PAXXIONEER / CELEBRATE PASSIONS
+    [Tags]    pending
+
+TM001_TC014_Verify clicking paxxioneer logo on header will open Homepage
+    [Tags]
+
+TM001_TC015_Verify Meet Paxxioneer link is presented and worked
+    [Tags]    sanity
+    # ===== VP ====== Verify Meet Paxxioneer is on header
+    open or close header menu
+    ${vp}    Run Keyword And Return Status    Page Should Contain Element    ${homepage_header_meet paxxioneer}
+    VERIFY WITH ERROR HANDLE    ${vp}    Meet Paxxioneer link on header is shown    Meet Paxxioneer link on header is not shown
+    # Click Meet Paxxioneer link
+    Click Element    ${homepage_header_meet paxxioneer}
+    # ===== VP ====== Verify Meet Paxxioneer page is shown by the present of category filter dropdown box
+    ${vp}    Run Keyword And Return Status    Page Should Contain Element    ${loc_meet paxxioneer_category filter dropdown box}
+    VERIFY WITH ERROR HANDLE    ${vp}    Meet paxxioneer page is opened. Category Filter shows    Category not found. Maybe the meet paxxioneer page has not opened yet
+
+TM001_TC016_Verify Meet paxxioneers link is in orange if user has not signed in yet
+    [Tags]    pending
+
+TM001_TC017_Verify FAQ is on header, clicking on it will navigate to FAQ page
+    # ===== VP ====== Verify FAQ element is present. This element is in header
+    ${vp}    Run Keyword And Return Status    Element Should Be Visible    //div[@id="navbar-main-container"]/nav[@id="navbar-main"]/ul[@class="nav navbar-nav navbar-right"]/li[@class="show-on-hover"]/a[contains(text(),'FAQ')]    # this is the exact xpath to the FAQ, if this case fail, meaning the FAQ is no longer in header bar
+    VERIFY WITH ERROR HANDLE    ${vp}    FAQ link is present    FAQ link is not present

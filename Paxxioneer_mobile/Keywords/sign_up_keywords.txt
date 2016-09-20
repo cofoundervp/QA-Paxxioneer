@@ -1,0 +1,26 @@
+*** Settings ***
+Resource          resource config.txt
+
+*** Keywords ***
+fill info to all fields to sign up form
+    [Arguments]    ${arg_username}    ${arg_email}    ${arg_password}
+    # input username
+    Input Text    ${su_username field}    ${arg_username}
+    # input email
+    Input Text    ${su_email field}    ${arg_email}
+    # input password
+    Input Text    ${su_password field}    ${arg_email}
+
+sign up
+    [Arguments]    ${arg_username}    ${arg_email}    ${arg_password}
+    [Documentation]    This keyword including:
+    ...
+    ...    -- open sign up form
+    ...
+    ...    -- input all correct info
+    ...
+    ...    -- Click Sign Up Now
+    open or close header menu
+    open signup form
+    fill info to all fields to sign up form    ${arg_username}    ${arg_email}    ${arg_password}
+    Click Element    ${su_sign up now button}

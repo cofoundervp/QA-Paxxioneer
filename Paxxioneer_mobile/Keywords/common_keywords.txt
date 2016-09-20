@@ -1,0 +1,84 @@
+*** Settings ***
+Resource          resource config.txt
+
+*** Keywords ***
+open paxxioneer in a new browser
+    [Arguments]    ${kw_arg_browser}    ${kw_arg_environment}    ${kw_end domain}
+    [Documentation]    This keyword is to open paxxioneer.com
+    ...
+    ...    Argurment: ${browser}, ${environment}
+    ...
+    ...    ${browser} = gc / ff / ie
+    ...
+    ...    ${environment} = staging / dev / www
+    ...
+    ...    default:
+    ...
+    ...    ${browser} == ff
+    ...
+    ...    ${environment} == staging
+    Open Application    http://localhost:4723/wd/hub    platformName=Android    platformVersion=4.4.2    deviceName=emulator-5554    browserName=Browser
+    Go To Url    http://${kw_arg_environment}.paxxioneer.${kw_end domain}
+    AppiumLibrary.Set Appium Timeout    15
+
+global cooldown
+    [Documentation]    This keyword to call the Sleep buildin keyword in a defined time (in second)
+    sleep    ${config_wait_time}
+
+WRITE MESSAGE TO CONSOLE AND LOG FILE
+    [Arguments]    ${arg_msg}
+    Log    ${arg_msg}    INFO    \    True
+
+VERIFY WITH ERROR HANDLE
+    [Arguments]    ${verify point}    ${message if passed}    ${message if failed}
+    Run Keyword If    '${verify point}' == 'True'    WRITE MESSAGE TO CONSOLE AND LOG FILE    ${message if passed}
+    Run Keyword If    '${verify point}' == 'True'    Capture Page Screenshot
+    Run Keyword If    '${verify point}' == 'False'    Fail    ${message if failed}
+
+scroll and click
+    [Arguments]    ${arg_pilot element}    ${arg_element to click}
+    Comment    Scroll Down    ${arg_pilot element}
+    Comment    Wait Until Page Contains Element    ${arg_pilot element}
+    sleep    1s
+    Click Element    ${arg_element to click}
+
+open login form and login
+    [Arguments]    ${arg_username}    ${arg_password}
+    open or close header menu
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Open Login form
+    Click Element    ${cm_header_login link}
+    # wait until email address field is shown
+    Wait Until Page Contains Element    ${username field}
+    Input Text    ${username field}    ${arg_username}
+    Input Text    ${password field}    ${arg_password}
+    Click Element    ${login now button}
+
+generate username
+    ${date}    Get Current Date    result_format=%Y-%m-%d
+    ${username}    Generate Random String    10
+    ${username}    Catenate    SEPARATOR=-    ${date}    ${username}
+    [Return]    ${username}
+
+open signup form
+    [Documentation]    -- Open header menu
+    ...
+    ...    -- Click Sign Up button
+    ...
+    ...    -- Wait Page contains Sign Up form
+    open or close header menu
+    Click Element    ${cm_header_sign up link}
+    Wait Until Page Contains Element    ${su_sign up form}
+
+generate email
+    [Arguments]    ${arg_username}
+    ${arg_email}    Catenate    SEPARATOR=    ${arg_username}    ${gb_email domain}
+    [Return]    ${arg_email}
+
+open or close header menu
+    global cooldown
+    Click Element    ${cm_header main menu button}
+    global cooldown
+
+logout
+    open or close header menu
+    Click Element    ${cm_header_logout}

@@ -1,0 +1,7 @@
+*** Variables ***
+${page title - home}    Home - Paxxioneer
+${page title - why are we here}    Why are we here? - Paxxioneer
+${page title - why paxxioneer}    Why Paxxioneer - Paxxioneer
+${page title - meet passionate people}    Meet passionate people - Paxxioneer
+${page title - make your journey meaningful}    Make your journey meaningful - Paxxioneer
+${page title - become a paxxioneer}    Become a paxxioneer! - Paxxioneer

@@ -1,0 +1,58 @@
+*** Settings ***
+Test Setup        start paxxioneer with default config
+Test Teardown     Close Application
+Resource          ../Keywords/resource config.txt
+
+*** Test Cases ***
+TM002_TC001_Verify customer can sign up
+    [Tags]    sanity    demo
+    open signup form
+    ${tc_customer username}    generate username
+    ${tc_customer email}    generate email    ${tc_customer username}
+    # set above information to global
+    ${gb_customer username}    Set Global Variable    ${tc_customer username}
+    ${gb_customer email}    Set Global Variable    ${tc_customer email}
+    # input info into all fields
+    fill info to all fields to sign up form    ${tc_customer username}    ${tc_customer email}    ${gb_password}
+    # click Sign Up button
+    Click Element    ${su_sign up now button}
+    # Verify customer can see their username on homepage after sign up
+    global cooldown
+    open or close header menu
+    Page Should Contain Element    ${cm_username container}
+
+TM002_TC002_Verify customer can sign in
+    [Tags]    sanity    demo
+    open login form and login    ${gb_customer username}    ${gb_password}
+    # verify user can see username after login
+    global cooldown
+    open or close header menu
+    Page Should Contain Element    ${cm_username container}
+
+TM002_TC003_verify user can sign up with facebook
+    [Tags]    sanity
+    open signup form
+
+TM002_TC004_verify paxxioneer can sign in
+    [Tags]    sanity    demo
+    open login form and login    ${gb_paxxioneer username}    ${gb_password}
+    # verify user can see username after login
+    open or close header menu
+    Page Should Contain Element    ${cm_username container}
+
+TM002_TC005_verify admin can sign in
+    [Tags]    sanity
+    open login form and login    ${admin account}    ${admin password}
+    # verify user can see username after login
+    open or close header menu
+    Page Should Contain Element    ${cm_username container}
+
+TM002_TC006_verify user can sign out
+    [Tags]    sanity    demo
+    open login form and login    ${gb_customer email}    ${gb_password}
+    global cooldown
+    open or close header menu
+    logout
+    global cooldown
+    open or close header menu
+    Page Should Contain Element    ${cm_header_sign up link}

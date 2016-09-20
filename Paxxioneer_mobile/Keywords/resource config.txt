@@ -1,0 +1,18 @@
+*** Settings ***
+Resource          common_keywords.txt
+Resource          ../Variables/config_variables.txt
+Resource          ../Variables/global_variables.txt
+Resource          ../Variables/page_title.txt
+Resource          setup_keyword.txt
+Resource          ../Interfaces/common_interfaces.txt
+Resource          ../Interfaces/homepage_interfaces.txt
+Resource          ../Interfaces/login_popup.txt
+Resource          ../Interfaces/admin_page.txt
+Library           DateTime
+Library           Collections
+Library           string
+Library           String
+Library           AppiumLibrary
+Resource          ../Interfaces/sign_up_form.txt
+Resource          sign_up_keywords.txt
+Resource          ../Interfaces/meet_paxxioneer_interfaces.txt

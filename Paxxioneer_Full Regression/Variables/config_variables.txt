@@ -1,0 +1,5 @@
+*** Variables ***
+${config_wait_time}    2s
+${config_browser}    ff
+${config_environment}    staging
+${config_end domain}    cvp.io

@@ -1,0 +1,18 @@
+*** Variables ***
+${admin page title}    Paxxioneers List - Paxxioneer
+${admin table}    css=table.table.table
+${admin page_manage paxxioneer_create paxxioneer button}    //button[contains(text(),"Paxxioneer")]
+${admin page_manage paxxioneer_paxxioneer username field}    xpath=(//input[@id='login-username'])[2]
+${admin page_manage paxxioneer_paxxioneer email field}    xpath=(//input[@id='login-email'])[6]
+${admin page_manage paxxioneer_paxxioneer password field}    xpath=(//input[@id='login-email'])[7]
+${admin page_manage paxxioneer_paxxioneer submit}    xpath=(//button[@type='submit'])[7]
+${admin page_manage paxxioneer_paxxioneer cancel button}    link=Cancel
+${admin page_left menu_manage paxxioneer link}    link=Manage Paxxioneer
+${admin page_left menu_featured paxxioneer link}    link=Featured Paxxioneer
+${admin page_left menu_admin review link}    link=Reviews
+${admin page_featured paxxioneer_text box}    xpath=(//input[@type='text'])[6]
+${admin page_featured paxxioneer_add button}    css=div.col-md-12.col-md-6 > button.btn.btn-primary
+${admin page_featured paxxioneer table}    //div[@id='view']/section/div/div[2]/div/table/tbody
+${admin page_manage paxxioneer_the first disable button}    //span[@class="fa fa-unlock fa-fw"]
+${admin page_xpath of row}    //div[@id='view']/section/div/div[2]/div/table/tbody/tr
+${admin page_xpath of column}    //div[@id='view']/section/div/div[2]/div/table/tbody/tr[2]/td

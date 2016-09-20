@@ -1,0 +1,2 @@
+*** Variables ***
+${loc_meet paxxioneer_category filter dropdown box}    //select[@name="categoryFilter"]

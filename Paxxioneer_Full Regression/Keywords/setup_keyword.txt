@@ -1,0 +1,7 @@
+*** Settings ***
+Resource          resource config.txt
+
+*** Keywords ***
+start paxxioneer with default config
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Setup - Open Paxxioneer
+    open paxxioneer in a new browser    ${config_browser}    ${config_environment}    ${config_end domain}
