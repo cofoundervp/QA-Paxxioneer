@@ -4,7 +4,7 @@ ${customer_username}    cus-1
 ${insider_password}    Abc123
 ${customer_password}    Abc123
 ${test data path}    E:\Selenium-Pax\Paxxioneer_pilot\
-${PAX USERNAME}    default_paxxioneer_qa_auto
+${PAX USERNAME}    default_paxxioneer_qa_auto1
 ${PAX EMAIL}      ${EMPTY}
 ${profile message update successful}    Profile updated.
 ${profile message update fail}    Profile validation failed
