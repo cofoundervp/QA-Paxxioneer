@@ -1,0 +1,189 @@
+*** Settings ***
+Suite Teardown    Close Browser
+Test Teardown     Close Browser
+Library           ExtendedSelenium2Library
+Resource          ../Variables/login_form.txt
+Resource          ../Interfaces/homepage.txt
+Resource          ../Interfaces/login_form.txt
+Resource          ../Action/general action.txt
+Resource          ../Action/global_variables.txt
+Resource          ../Action/verify_point.txt
+Resource          ../Interfaces/info_page.txt
+Resource          ../Interfaces/functional_page.txt
+Resource          ../Variables/page_title.txt
+Resource          ../Interfaces/admin_page.txt
+Library           DateTime
+Library           string
+Library           String
+Resource          ../Action/global_variables.txt
+Library           Collections
+Resource          ../Interfaces/front-ent_page.txt
+Library           AutoItLibrary
+Resource          ../Interfaces/profile_page.txt
+Resource          ../Action/my_experience_action.txt
+Resource          ../Interfaces/your_booking_page.txt
+Resource          ../Interfaces/message_page.txt
+
+*** Test Cases ***
+Test
+    [Tags]    test
+    open paxxioneer
+    open login form from homepage
+    login    emailtest    Abc123
+    click function page from dropdown    ${dropdown your booking link}
+    ${test}    get text    //span[@original-title="Booking Status"]
+
+test 2
+    [Tags]    test
+    #${options}=    Evaluate    sys.modules['selenium.webdriver'].ChromeOptions()    sys, selenium.webdriver
+    #Call Method    ${options}    add_argument    user-data-dir\=C:\\Users\\DELL\\AppData\\Local\\Google\\Chrome\\User Data\\
+    #Create WebDriver    Chrome    chrome_options=${options}
+    #Go To    https://www.paxxioneer.com/
+
+create 100 activity
+    [Tags]    test
+    open paxxioneer
+    open login form from homepage
+    login    100ne    Abc123
+    click function page from dropdown    ${dropdown my experience}
+    : FOR    ${i}    IN RANGE    1    100
+    \    create experience    ${i}    1    Person
+    \    click function page from dropdown    ${dropdown my experience}
+
+create 20 request
+    [Tags]    test
+    open paxxioneer
+    open login form from homepage
+    login    emailtest3    Abc123
+    : FOR    ${i}    IN RANGE    1    20
+    \    open paxxioneer profile    gianghoang2
+    \    scroll and click element    link=Profile    ${first activity}
+    \    ${today day}    get today day
+    \    click today on booking calendar    ${today day}
+    \    Click Button    ${book button on front end}
+    \    fill booking info    Giang    Hoang    VN    Ho Chi Minh
+    \    ${global first message}    Generate Random String    20
+    \    Set Global Variable    ${global first message}
+    \    Input Text    ${payment introduce yourself field}    ${global first message}
+    \    sleep    3s
+    \    #check if credit card field visable?
+    \    fill credit card
+    \    scroll and click element    ${payment introduce yourself field}    ${payment request booking button}
+    \    sleep    1s
+
+create 100 paxxioneer
+    [Tags]    test
+    Open Browser    http://dev.paxxioneer.cvp.io/
+    Maximize Browser Window
+    Wait Until Element Is Visible    ${login button}
+    open login form from homepage
+    login    admin    admin12A
+    : FOR    ${i}    IN RANGE    1    100
+    \    ${tc_name}    generate paxxioneer username
+    \    ${tc_email}    generate paxxioneer email
+    \    create paxxioneer    ${tc_name}    ${tc_email}    Abc123
+
+text
+    [Tags]    test
+    Open Browser    http://staging.paxxioneer.cvp.io/terms
+    ${tc_txt}    Get Text    css=article
+    Should Be Equal    ${tc_txt}    1. General information, contact details: \ Company name: Paxxioneer Group Limited \ \ Email: info@paxxioneer.com \ 2. Service \ Our aim is to provide users of the Application with unique, personalized content on sites of \ other \ Services \ connected \ to \ the \ Application, \ by \ using \ data \ given \ in \ the \ Privacy \ Policy. Together with accepting the Application, you have to accept the Provider’s Privacy Policy, \ too. You \ can \ find \ and \ choose \ the \ detailed specifications in \ connection \ with \ the \ package \ of \ services and the tariff of the package during the registration at the ordering. You have to accept this Contract and the Privacy Policy too, for the completion of ordering. We reserve the right to unilaterally establish, cancel or review the tariff in connection with \ the service. We will inform you thereof, like all substantial changes relating to the service. \ 3. Use of the Service \ Use of the Service can occur upon: (a) using an email address and password, and data given by you voluntarily (b) connecting your Facebook account \ Services connected to the Application can be used through Facebook login. By adding the \ application \ that \ provides \ connection, \ you \ provide \ access \ for \ the \ Provider \ to \ your \ basic \ Facebook \ data. The \ Services \ do \ not \ send \ any \ message \ to \ Facebook. \ Through \ liking \ the \ parent \ page \ of \ the \ Application, \ and \ through \ start \ of \ use, \ you \ accept \ that \ the \ Application \ may use data from your Facebook user profile for functions specified above. \ You can terminate the connection of the Application and Facebook at any time. \ The Company – besides having the required technical availability – does not have connection \ with \ Facebook. Facebook \ did \ not \ order \ or \ the \ Application, \ and \ it \ does \ not \ manage \ the \ Application. \ Using \ our \ Services \ does \ not \ give \ you \ ownership \ of \ any \ intellectual \ property \ rights \ in \ our \ Services or the content you access. You may not use content from our Services unless you \ obtain permission from its owner or are otherwise permitted by law. \ The entitled/owner of Copyrights, trademarks, logos etc. relating to the Application is the \ Paxxioneer Group Limited. \ These \ contractual \ terms \ are \ not to provide right to use labels or emblems which used in our Service, you are not entitled \ to utilize or modify them, in whole or part. Don’t remove, don’t make illegible and don’t \ amend the legal notices specified in or beside our Service. \ With the registration you undertake to indicate on your website in your Privacy Policy that, \ the \ Paxxioneer \ website collects datas \ about \ users, who like your \ Facebook \ page, \ moreover that the users take note this, if they like the page, moreover you have to provide \ that the users before this action know your Privacy Policy which comply with this contract. \ 4. Control of personal data \ By accepting the current Terms of Use you take note of usage of your data according to our \ Privacy \ Policy in \ order \ that \ you \ are \ shown \ personalized \ content \ on \ sites \ integrating \ the \ Application. \ We treat data that are in our custody confidentially, we use them solely in order to provide \ the Service; content recommendation and aimed advertisements. \ In case you are under 14, you can only use the Application with the permission, and during \ the supervision, of parent or guardian. In case you are underage, do not provide us or other \ users with personal data. \ 5. Permit of use \ You take notice that you use the Application with a limited, not exclusive, not transferable, \ and revocable license. We are entitled to terminate the license of use for the Application \ and access to the Application without prior notice and for any reason. During use, you are obliged to resort from any unlawful activity, or activity that harms the \ rights or interests of other users. \ It \ is \ against \ the \ law \ when \ you \ share \ or \ give \ personal \ data \ of \ others \ without \ their \ prior \ Consent. \ 6. Modifications and termination \ We reserve the right to modify the current Terms of Use; to add or remove parts of it at any \ time. It is your responsibility to check the Terms of Use regularly. In case you do not agree \ with the modifications, do not use the Application. \ We \ may \ terminate \ current \ Terms \ of \ Use \ at \ any \ time \ and \ for \ any \ reason, \ without \ prior \ Notice. \ In case you have questions or doubts about current Terms of Use, please let us know by \ email at the … email address and share your concern. \ 7. Disclaimer and limitation of liability \ You accept that you use the Application at your own responsibility. We do not grant that the \ Application is available at any time, or the Service provided is uninterrupted and error-free, \ meets your expectations or that any errors in the Application are corrected. \ We are not responsible for content, offers, or appearances provided by sites or providers \ integrating \ the \ Application. \ We \ are \ not \ responsible \ for \ obscene, \ libelous, \ slanderous, \ hateful, illegal, politically disruptive or degrading, offensive content that you receive or see \ while using the Application. \ We \ do \ not \ guarantee \ accuracy \ or \ completeness \ of \ information \ provided \ and \ we \ are \ not \ responsible for loss occurring due to relying on such information. \ Your \ only \ and \ exclusive \ opportunity \ to \ rectify \ detriments \ concerning \ the \ use \ of \ the \ Application is that you terminate the use of it. \ We \ are \ not \ responsible \ for \ damages \ attributable \ to \ your \ negligence \ or \ insufficient \ care \ during the use of the Application. \ We are not responsible for lost profits, revenues, or data, financial losses or indirect, special, \ consequential, or punitive damages. \ 8. Business uses of our Services \ If you are using our Services on behalf of a business, that business accepts these terms. It \ will \ hold \ harmless \ and \ indemnify the entitled/owner, \ officers, \ and \ employees of \ the \ Application from any claim, suit or action arising from or related to the use of the Services or \ violation \ of \ these \ terms, \ including \ any \ liability \ or \ expense \ arising \ from \ claims, \ losses, \ damages, suits, judgments, litigation costs and attorneys’ fees. \ 9. Payment of fees \ The \ Service \ provider charge \ fee \ on \ the \ basis \ of \ the \ Tariff \ which \ constitute to \ service \ packages (hereinafter \ referred \ to \ as \ Tariff) \ which \ is \ an \ Annexes \ I. \ form \ a \ part \ of \ this \ Agreement for the Services, on the basis of the package which you have ordered. The date of \ issue is at the same time the date of performance. \ By accepting the current contract you recognize that, you know the Tariff which constitute \ to service packages which selected in the Article 2. \ The fee is overdue in accordance with the day and the way provided in receipt. You have to \ pay default interest \ in the case of late payments. The service will be suspended in the case \ of 30 days late. Termination or suspension for this reason of the service is not exempt you \ from \ pay \ of \ service \ fee \ which \ you \ have \ already \ been \ provided \ before \ the \ date \ of \ the \ termination or suspension. \ 10. Other provisions \ The laws of Hungary apply to this Contract, and the Parties for all claims arising out of or \ relating to this Contact submit to exclusive jurisdiction of Hungarian courts. (Central District \ Court of Pest, Capital Regional Court) \ In \ case \ certain \ terms \ in \ current \ Terms \ of \ Use \ are \ proven \ invalid, \ that \ does \ not \ concern \ validity of other terms. \ \ \ \ \ SPRINGTAB TERMS OF USE \ In case you would like to use the Application, you have to accept the Terms of Service below. \ 1. General information, contact details: \ Company name: SpringTab Szolgáltató és Fejlesztő Limited Liability Company \ \ \ Registered office: 1146 Budapest, Hermina út 5. fszt. 2. \ 2. Service \ Our aim is to provide users of the Application with unique, personalized content on sites of \ other \ Services \ connected \ to \ the \ Application, \ by \ using \ data \ given \ in \ the \ Privacy \ Policy. Together with accepting the Application, you have to accept the Provider’s Privacy Policy, \ too. You \ can \ find \ and \ choose \ the \ detailed specifications in \ connection \ with \ the \ package \ of \ services and the tariff of the package during the registration at the ordering. You have to accept this Contract and the Privacy Policy too, for the completion of ordering. We reserve the right to unilaterally establish, cancel or review the tariff in connection with \ the service. We will inform you thereof, like all substantial changes relating to the service. \ 3. Use of the Service \ Use of the Service can occur upon: (a) using an email address and password, and data given by you voluntarily (b) connecting your Facebook account \ Services connected to the Application can be used through Facebook login. By adding the \ application \ that \ provides \ connection, \ you \ provide \ access \ for \ the \ Provider \ to \ your \ basic \ Facebook \ data. The \ Services \ do \ not \ send \ any \ message \ to \ Facebook. \ Through \ liking \ the \ parent \ page \ of \ the \ Application, \ and \ through \ start \ of \ use, \ you \ accept \ that \ the \ Application \ may use data from your Facebook user profile for functions specified above. \ You can terminate the connection of the Application and Facebook at any time. \ The Company – besides having the required technical availability – does not have connection \ with \ Facebook. Facebook \ did \ not \ order \ or \ the \ Application, \ and \ it \ does \ not \ manage \ the \ Application. \ Using \ our \ Services \ does \ not \ give \ you \ ownership \ of \ any \ intellectual \ property \ rights \ in \ our \ Services or the content you access. You may not use content from our Services unless you \ obtain permission from its owner or are otherwise permitted by law. \ The entitled/owner of Copyrights, trademarks, logos etc. relating to the Application is the \ SpringTab \ Szolgáltató \ és \ Fejlesztő \ Limited \ Liability \ Company. \ These \ contractual \ terms \ are \ not to provide right to use labels or emblems which used in our Service, you are not entitled \ to utilize or modify them, in whole or part. Don’t remove, don’t make illegible and don’t \ amend the legal notices specified in or beside our Service. \ With the registration you undertake to indicate on your website in your Privacy Policy that, \ the \ SpringTab Application collects datas \ about \ users, who like your \ Facebook \ page, \ moreover that the users take note this, if they like the page, moreover you have to provide \ that the users before this action know your Privacy Policy which comply with this contract. \ 4. Control of personal data \ By accepting the current Terms of Use you take note of usage of your data according to our \ Privacy \ Policy in \ order \ that \ you \ are \ shown \ personalized \ content \ on \ sites \ integrating \ the \ Application. \ We treat data that are in our custody confidentially, we use them solely in order to provide \ the Service; content recommendation and aimed advertisements. \ In case you are under 14, you can only use the Application with the permission, and during \ the supervision, of parent or guardian. In case you are underage, do not provide us or other \ users with personal data. \ 5. Permit of use \ You take notice that you use the Application with a limited, not exclusive, not transferable, \ and revocable license. We are entitled to terminate the license of use for the Application \ and access to the Application without prior notice and for any reason. During use, you are obliged to resort from any unlawful activity, or activity that harms the \ rights or interests of other users. \ It \ is \ against \ the \ law \ when \ you \ share \ or \ give \ personal \ data \ of \ others \ without \ their \ prior \ Consent. \ 6. Modifications and termination \ We reserve the right to modify the current Terms of Use; to add or remove parts of it at any \ time. It is your responsibility to check the Terms of Use regularly. In case you do not agree \ with the modifications, do not use the Application. \ We \ may \ terminate \ current \ Terms \ of \ Use \ at \ any \ time \ and \ for \ any \ reason, \ without \ prior \ Notice. \ In case you have questions or doubts about current Terms of Use, please let us know by \ email at the … email address and share your concern. \ 7. Disclaimer and limitation of liability \ You accept that you use the Application at your own responsibility. We do not grant that the \ Application is available at any time, or the Service provided is uninterrupted and error-free, \ meets your expectations or that any errors in the Application are corrected. \ We are not responsible for content, offers, or appearances provided by sites or providers \ integrating \ the \ Application. \ We \ are \ not \ responsible \ for \ obscene, \ libelous, \ slanderous, \ hateful, illegal, politically disruptive or degrading, offensive content that you receive or see \ while using the Application. \ We \ do \ not \ guarantee \ accuracy \ or \ completeness \ of \ information \ provided \ and \ we \ are \ not \ responsible for loss occurring due to relying on such information. \ Your \ only \ and \ exclusive \ opportunity \ to \ rectify \ detriments \ concerning \ the \ use \ of \ the \ Application is that you terminate the use of it. \ We \ are \ not \ responsible \ for \ damages \ attributable \ to \ your \ negligence \ or \ insufficient \ care \ during the use of the Application. \ We are not responsible for lost profits, revenues, or data, financial losses or indirect, special, \ consequential, or punitive damages. \ 8. Business uses of our Services \ If you are using our Services on behalf of a business, that business accepts these terms. It \ will \ hold \ harmless \ and \ indemnify the entitled/owner, \ officers, \ and \ employees of \ the \ Application from any claim, suit or action arising from or related to the use of the Services or \ violation \ of \ these \ terms, \ including \ any \ liability \ or \ expense \ arising \ from \ claims, \ losses, \ damages, suits, judgments, litigation costs and attorneys’ fees. \ 9. Payment of fees \ The \ Service \ provider charge \ fee \ on \ the \ basis \ of \ the \ Tariff \ which \ constitute to \ service \ packages (hereinafter \ referred \ to \ as \ Tariff) \ which \ is \ an \ Annexes \ I. \ form \ a \ part \ of \ this \ Agreement for the Services, on the basis of the package which you have ordered. The date of \ issue is at the same time the date of performance. \ By accepting the current contract you recognize that, you know the Tariff which constitute \ to service packages which selected in the Article 2. \ The fee is overdue in accordance with the day and the way provided in receipt. You have to \ pay default interest \ in the case of late payments. The service will be suspended in the case \ of 30 days late. Termination or suspension for this reason of the service is not exempt you \ from \ pay \ of \ service \ fee \ which \ you \ have \ already \ been \ provided \ before \ the \ date \ of \ the \ termination or suspension. \ 10. Other provisions \ The laws of Hungary apply to this Contract, and the Parties for all claims arising out of or \ relating to this Contact submit to exclusive jurisdiction of Hungarian courts. (Central District \ Court of Pest, Capital Regional Court) \ In \ case \ certain \ terms \ in \ current \ Terms \ of \ Use \ are \ proven \ invalid, \ that \ does \ not \ concern \ validity of other terms.
+
+finding country that does not have city under it
+    [Tags]    test
+    open paxxioneer
+    open login form from homepage
+    login    gianghoang2    Abc123
+    click function page from dropdown    ${dropdown my account link}
+    @{country list}    Get List Items    ${my account country field}
+    : FOR    ${i}    IN RANGE    0    252
+    \    Select From List By label    ${my account country field}    @{country list}[${i}]
+    \    sleep    2s
+    \    Run Keyword And Continue On Failure    verify if city list empty    @{country list}[${i}]
+
+country data from real web
+    [Tags]    test
+    Afghanistan
+    Aland Islands
+    Albania
+    Algeria
+    American Samoa
+    Andorra
+    Anguilla
+    Antarctica
+    Antigua and Barbuda
+    Argentina
+
+create 200 categories
+    [Tags]    test
+    open paxxioneer
+    open login form from homepage
+    login    admin    admin12A
+    Click Element    //a[contains(text(),'Category')]
+    : FOR    ${i}    IN RANGE    0    999
+    \    Click Element    //button[@class="btn btn-primary btn-xs"]
+    \    Input text    //input[@id="category"]    ${i}
+    \    Click Element    //button[@class="btn btn-primary ng-isolate-scope"]
+    \    Run Keyword And Ignore Error    verify message popup    Category ${i} has been created.
+
+remove category
+    [Tags]    test
+    open paxxioneer
+    open login form from homepage
+    login    admin    admin12A
+    Click Element    //a[contains(text(),'Category')]
+    : FOR    ${i}    IN RANGE    0    975
+    \    Click Element    //span[@class="fa fa-trash fa-fw"]
+    \    Click Element    //button[contains(text(),'Remove')]
+
+try to edit tell more field until error
+    [Tags]    test
+    open paxxioneer
+    open login form from homepage
+    login    gianghoang2    Abc123
+    click function page from dropdown    ${dropdown my account link}
+    Repeat Keyword    100    test func
+
+disable multiple paxxioneers
+    [Tags]    test
+    open paxxioneer
+    open login form from homepage
+    login    admin    admin12A
+    sleep    3s
+    Repeat Keyword    100 times    disable 1 paxxioneer
+
+*** Keywords ***
+a
+    ${chrome options}=    Evaluate    sys.modules['selenium.webdriver'].ChromeOptions()    sys, selenium.webdriver
+    Call Method    ${chrome options}    add_argument    user-data-dir\=C:\\Users\\DELL\\AppData\\Local\\Google\\Chrome\\User Data\\Default\\Profile 1
+    Create Webdriver    Chrome    chrome_options=${chrome options}
+    Goto    https://stackoverflow.com
+    Sleep    1 minute    # manually verify the extension is active}
+
+b
+    ${options}    Evaluate    sys.modules['selenium.webdriver'].ChromeOptions()    sys, selenium.webdriver
+    ${options.add_argument}    Set Variable    user-data-dir\=E:\\Default\\
+    Create WebDriver    Chrome    chrome_options=${options}
+    go to    https://github.com/robotframework/Selenium2Library/issues/225
+
+c
+    options = webdriver.ChromeOptions()
+    options.add_argument('--load-and-launch-app=C/Users/DELL/Desktop/Neeah_Chrome_Ext_2016.03.04.1')
+    capabilities = webdriver.DesiredCapabilities()
+    instance = BuiltIn().get_library_instance('Selenium2Library').create_webdriver('Remote', command_executor=localhost, desired_capabilities=options.to_capabilities())
+    return instance
+
+test func
+    Input Text    ${my account tell public more about}    George is happy to host travelers to stay at his family villa, surrounded by the century-old olive grove that gives the property a traditional Cretan touch. Cretan olive oil is considered the best extra virgin olive oil in the world. He produces top quality extra virgin olive oil with acidity lower than 0.3%!
+    Click Element    ${my account update button}
+    verify message popup    Profile updated.
+    Clear Element Text    ${my account tell public more about}
+    Click Element    ${my account update button}
+    verify message popup    Profile updated.
+
+disable 1 paxxioneer
+    sleep    1s
+    scroll and click element    //div[@id="top"]    //span[@class="fa fa-unlock fa-fw"]
+    Click Element    //button[contains(text(),'Disable')]
+    sleep    1s
+    Reload Page

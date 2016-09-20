@@ -1,0 +1,12 @@
+*** Variables ***
+${home page}      Home - Paxxioneer
+${our brand}      Our Brand - Paxxioneer
+${who are paxxioneer}    Who are paxxioneers? - Paxxioneer
+${meet paxxioneer}    Meet Paxxioneers - Paxxioneer
+${become paxxioneer}    Become a paxxioneer! - Paxxioneer
+${why are we here}    Why are we here? - Paxxioneer
+${meet passionate people}    Meet passionate people - Paxxioneer
+${make your journey meaningful}    Make your journey meaningful - Paxxioneer
+${share your passion}    Share your passions - Paxxioneer
+${blog}           Blog - Paxxioneer
+${contact us}     Contact Us - Paxxioneer

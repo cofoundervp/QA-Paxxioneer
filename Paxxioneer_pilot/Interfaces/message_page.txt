@@ -1,0 +1,10 @@
+*** Variables ***
+${msg send button}    id=btn-chat
+${msg text field}    id=btn-input
+${msg accept button}    //div[@id='view']/section/div/div[2]/div/section/div/div/div/div[2]/div/div/div/div[2]/button
+${msg decline button}    //div[@id='view']/section/div/div[2]/div/section/div/div/div/div[2]/div/div/div/div[2]/button[2]
+${msg popup decline button}    //button[@ng-repeat="button in modal.buttons" and contains(text(),'Decline')]
+${msg popup cancel button}    //button[@ng-repeat="button in modal.buttons" and contains(text(),'Cancel')]
+${msg accepted label}    //span[@class='meta-item' and contains(text(), 'Accepted')]
+${msg declined label}    //span[@class='meta-item' and contains(text(), 'Declined')]
+${msg popup accept button}    //button[@ng-repeat="button in modal.buttons" and contains(text(),'Accept')]

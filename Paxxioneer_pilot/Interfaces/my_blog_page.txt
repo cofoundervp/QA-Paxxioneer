@@ -1,0 +1,8 @@
+*** Variables ***
+${my blog write my new journal here}    //a[@id='write-here']/span
+${my blog title}    name=title
+${my blog body}    //div[@id='editor']/div[2]/div[2]
+${my blog save button}    link=Save
+${my blog}        link=Publish
+${my blog new post}    link=New Post
+${my blog cancel button}    link=Cancel

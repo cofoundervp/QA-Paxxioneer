@@ -1,0 +1,15 @@
+*** Variables ***
+${admin page title}    Paxxioneers List - Paxxioneer
+${admin table}    css=table.table.table
+${create paxxioneer button}    //div[@id='view']/section/div/div[2]/div/div/div/button
+${paxxioneer username field}    xpath=(//input[@id='login-username'])[2]
+${paxxioneer email field}    xpath=(//input[@id='login-email'])[6]
+${paxxioneer password field}    xpath=(//input[@id='login-email'])[7]
+${paxxioneer submit}    xpath=(//button[@type='submit'])[7]
+${paxxioneer cancel button}    link=Cancel
+${manage paxxioneer link}    link=Manage Paxxioneer
+${featured paxxioneer link}    link=Featured Paxxioneer
+${admin review link}    link=Reviews
+${featured paxxioneer text box}    xpath=(//input[@type='text'])[6]
+${featured paxxioneer add button}    css=div.col-md-12.col-md-6 > button.btn.btn-primary
+${featured paxxioneer table}    //div[@id='view']/section/div/div[2]/div/table/tbody

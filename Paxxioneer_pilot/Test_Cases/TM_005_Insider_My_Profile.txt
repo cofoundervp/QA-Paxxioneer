@@ -1,0 +1,226 @@
+*** Settings ***
+Suite Teardown    Close Browser
+Test Teardown     Close Browser
+Library           ExtendedSelenium2Library
+Resource          ../Variables/login_form.txt
+Resource          ../Interfaces/homepage.txt
+Resource          ../Interfaces/login_form.txt
+Resource          ../Action/general action.txt
+Resource          ../Action/global_variables.txt
+Resource          ../Action/verify_point.txt
+Resource          ../Interfaces/info_page.txt
+Resource          ../Interfaces/functional_page.txt
+Resource          ../Variables/page_title.txt
+Resource          ../Interfaces/admin_page.txt
+Library           DateTime
+Library           string
+Library           String
+Resource          ../Action/global_variables.txt
+Library           Collections
+Resource          ../Interfaces/front-ent_page.txt
+Library           AutoItLibrary
+Resource          ../Interfaces/profile_page.txt
+
+*** Test Cases ***
+TM005_TC001_verify user can open My Profile page
+    open paxxioneer
+    open login form from homepage
+    login    ${PAX USERNAME}    Abc123
+    click function page from dropdown    ${dropdown my profile}
+    Title Should Be    Profile - Paxxioneer
+
+TM005_TC002_verify user can update background word and it is presented in avatar
+    open paxxioneer
+    open login form from homepage
+    login    ${PAX USERNAME}    Abc123
+    click function page from dropdown    ${dropdown my profile}
+    select background word    learn
+    Click Button    ${profile submit button}
+    verify message popup    ${profile message update successful}
+    verify background word update on avatar    learn
+    select background word    cook
+    Click Button    ${profile submit button}
+    verify message popup    ${profile message update successful}
+    verify background word update on avatar    cook
+    select background word    tour
+    Click Button    ${profile submit button}
+    verify message popup    ${profile message update successful}
+    verify background word update on avatar    tour
+    select background word    fly
+    Click Button    ${profile submit button}
+    verify message popup    ${profile message update successful}
+    verify background word update on avatar    fly
+    select background word    dive
+    Click Button    ${profile submit button}
+    verify message popup    ${profile message update successful}
+    verify background word update on avatar    dive
+
+TM005_TC003_verify user can input 100 characters to action word field and it is visbled in front-ent
+    open paxxioneer
+    open login form from homepage
+    login    ${PAX USERNAME}    Abc123
+    click function page from dropdown    ${dropdown my profile}
+    scroll and click element    //div[@id='view']/section/div/div[2]/div/form/h3[2]    ${action word textbox}
+    ${text}    Generate Random String    101
+    Input Text    ${action word textbox}    ${text}
+    Click Button    ${profile submit button}
+    verify message popup    ${profile message update successful}
+    open paxxioneer profile    ${PAX USERNAME}
+    ${verify point}    Get Text    ${action word text on fron-ent}
+    ${text}    String.Get Substring    ${text}    0    100
+    Should Be Equal    ${text}    ${verify point}
+    #    Verify action can be updated
+    click function page from dropdown    ${dropdown my profile}
+    scroll and click element    //div[@id='view']/section/div/div[2]/div/form/h3[2]    ${action word textbox}
+    ${text}    Generate Random String    10
+    Input Text    ${action word textbox}    ${text}
+    Click Button    ${profile submit button}
+    verify message popup    ${profile message update successful}
+    open paxxioneer profile    ${PAX USERNAME}
+    ${verify point}    Get Text    ${action word text on fron-ent}
+    Should Be Equal    ${text}    ${verify point}
+
+TM005_TC004_verify for tag title cases
+    [Documentation]    -- Verify user can input 3 tags
+    ...
+    ...    -- Veirify user cannot submit with over 3 tags
+    ...
+    ...    -- Verify tag is updated in profile front-ent page
+    ...
+    ...    -- Verify tag is updated on avatar
+    ...
+    ...    -- Verify tag can be deleted
+    open paxxioneer
+    open login form from homepage
+    login    ${PAX USERNAME}    Abc123
+    click function page from dropdown    ${dropdown my profile}
+    #    input 3 tags
+    scroll and click element    ${action word textbox}    ${paxxioneer title text field}
+    ${tag 1 text}    Generate Random String    5
+    Input Text    ${paxxioneer title text field}    ${tag 1 text}
+    Press Key    ${paxxioneer title text field}    \\13
+    ${tag 2 text}    Generate Random String    5
+    Input Text    ${paxxioneer title text field}    ${tag 2 text}
+    Press Key    ${paxxioneer title text field}    \\13
+    ${tag 3 text}    Generate Random String    5
+    Input Text    ${paxxioneer title text field}    ${tag 3 text}
+    Press Key    ${paxxioneer title text field}    \\13
+    ${tag 4 text}    Generate Random String    5
+    Input Text    ${paxxioneer title text field}    ${tag 4 text}
+    Press Key    ${paxxioneer title text field}    \\13
+    #    verify 3 tags are submitted
+    scroll and click element    ${action word textbox}    ${paxxioneer title text field}
+    Comment    ${vp1}    Get Text    ${tag 1}
+    Comment    Should Be Equal    ${vp1}    ${tag 1 text}
+    Element Should Be Visible    //span[@class="ng-binding ng-scope" and contains(text(),'${tag 1 text}')]
+    Comment    ${vp2}    Get Text    ${tag 2}
+    Comment    Should Be Equal    ${vp2}    ${tag 2 text}
+    Element Should Be Visible    //span[@class="ng-binding ng-scope" and contains(text(),'${tag 2 text}')]
+    Comment    ${vp3}    Get Text    ${tag 3}
+    Comment    Should Be Equal    ${vp3}    ${tag 3 text}
+    Element Should Be Visible    //span[@class="ng-binding ng-scope" and contains(text(),'${tag 3 text}')]
+    #    verify cannot submit with over 3 tags
+    Click Button    ${profile submit button}
+    ${temp}    Get Text    css=div.form-group > div > div.form-group > p.help-block
+    Should Be Equal    ${temp}    Max 3 tags reached.
+    #    tag can be deleted
+    delete tag    4
+    Element Should Not Be Visible    //span[@class="ng-binding ng-scope" and contains(text(),'${tag 4 text}')]
+    Comment    Element Should Be Visible    ${tag 1}
+    Comment    Element Should Be Visible    ${tag 2}
+    Comment    Element Should Be Visible    ${tag 3}
+    #    3 tag is submit and update on avatar
+    Click Button    ${profile submit button}
+    verify message popup    ${profile message update successful}
+    verify tag text on avatar    1    ${tag 1 text}
+    verify tag text on avatar    2    ${tag 2 text}
+    verify tag text on avatar    3    ${tag 3 text}
+    #    3 tag is submit and update on profile front-ent
+    open paxxioneer profile    ${PAX USERNAME}
+    sleep    5s
+    verify tag text on profile front end    1    ${tag 1 text}
+    verify tag text on profile front end    2    ${tag 2 text}
+    verify tag text on profile front end    3    ${tag 3 text}
+    #    clean up 3 tags
+    click function page from dropdown    ${dropdown my profile}
+    delete tag    3
+    delete tag    2
+    delete tag    1
+
+TM005_TC005_verify user can add video url
+    open paxxioneer
+    open login form from homepage
+    login    ${PAX USERNAME}    Abc123
+    click function page from dropdown    ${dropdown my profile}
+    #    Verify default there are 3 video url slots
+    Element Should Be Visible    ${video field 0}
+    Element Should Be Visible    ${video field 1}
+    Element Should Be Visible    ${video field 2}
+    Element Should Not Be Visible    ${video field 3}
+    #    Verify there is add more video button
+    Element Should Be Visible    ${more video button}
+    #    Verify if there are 7 slots, more video button is hidden
+    scroll and click element    ${video field 0}    ${more video button}
+    scroll and click element    ${video field 1}    ${more video button}
+    scroll and click element    ${video field 2}    ${more video button}
+    scroll and click element    ${video field 3}    ${more video button}
+    Element Should Not Be Visible    ${more video button}
+    #    verify user can add 7 videos
+    scroll and click element    ${paxxioneer title text field}    ${video field 0}
+    Input Text    ${video field 0}    ${video url 1}
+    Sleep    5s
+    Input Text    ${video field 1}    ${video url 2}
+    Sleep    5s
+    Input Text    ${video field 2}    ${video url 3}
+    Sleep    5s
+    Input Text    ${video field 3}    ${url video 4}
+    Sleep    5s
+    Input Text    ${video field 4}    ${url video 5}
+    Sleep    5s
+    Input Text    ${video field 5}    ${url video 6}
+    Sleep    5s
+    Input Text    ${video field 6}    ${url video 7}
+    Sleep    5s
+    verify video thumbnail is shown on profile page    1
+    verify video thumbnail is shown on profile page    2
+    verify video thumbnail is shown on profile page    3
+    verify video thumbnail is shown on profile page    4
+    verify video thumbnail is shown on profile page    5
+    verify video thumbnail is shown on profile page    6
+    verify video thumbnail is shown on profile page    7
+    Click Button    ${profile submit button}
+    verify message popup    ${profile message update successful}
+    #    verify video thumbnail shows on front-end
+    open paxxioneer profile    ${PAX USERNAME}
+    verify video thumbnail show on profile front-end    1
+    verify video thumbnail show on profile front-end    2
+    verify video thumbnail show on profile front-end    3
+    verify video thumbnail show on profile front-end    4
+    verify video thumbnail show on profile front-end    5
+    verify video thumbnail show on profile front-end    6
+    verify video thumbnail show on profile front-end    7
+    #    verify user can clear video
+    click function page from dropdown    ${dropdown my profile}
+    Clear Element Text    ${video field 0}
+    sleep    5s
+    Clear Element Text    ${video field 1}
+    sleep    5s
+    Clear Element Text    ${video field 2}
+    sleep    5s
+    Clear Element Text    ${video field 3}
+    sleep    5s
+    Clear Element Text    ${video field 4}
+    sleep    5s
+    Clear Element Text    ${video field 5}
+    sleep    5s
+    Clear Element Text    ${video field 6}
+    sleep    5s
+    Element Should Not Be Visible    //div[@id='view']/section/div/div[2]/div/form/div[5]/div[1]/div[2]/div/video-thumb/div/div/div
+    Click Button    ${profile submit button}
+    verify message popup    ${profile message update successful}
+    # verify error if url is not valid
+    ${temp}    Generate Random String    10
+    Input Text    ${video field 0}    ${temp}
+    sleep    5s
+    Click Button    ${profile submit button}
+    verify message popup    Video validation failed

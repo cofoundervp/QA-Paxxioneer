@@ -1,0 +1,8 @@
+*** Variables ***
+${ybp_ticket_activity name_position}    //h4[@class="entry-title"]//em[@class="ng-binding" and contains(text(),'activityname')]
+${ybp_view-receipt-declined_button position}    //div[@id='view']/section/div/div[2]/div/div/article/div/div/booking-list[poslist]/section/div/div[posticket]/article/div/footer/a[2]    # Button on the left, stand for: view, receipt, and declined. post list = 1 / 2 / 3.
+${ybp_accepted-pending-expried-recipt right_button postion}    //div[@id='view']/section/div/div[2]/div/div/article/div/div/booking-list[poslist]/section/div/div[posticket]/article/div/footer/a    # button on the right
+${ybp_booking status button_locator}    //span[@class="booking-status ng-scope" and @ng-switch-when="currentstatus"]    # Need to replace currentstatus text to the real status (new / pending / accepted / declined)
+${ybp_the first activity name}    //h4[@class="entry-title"]
+${ybp_the first booking status}    //span[@original-title="Booking Status"]
+${ybp_the first ticket location}    //span[@class="location ng-binding"]

@@ -1,0 +1,22 @@
+*** Variables ***
+${left side message}    xpath=(//a[contains(text(),'Messages')])[2]
+${left side your booking}    xpath=(//a[contains(text(),'Your Booking')])[2]
+${left side my experience}    xpath=(//a[contains(text(),'My Experience')])[2]
+${left side my profile}    xpath=(//a[contains(text(),'My Profile')])[2]
+${left side my blog}    xpath=(//a[contains(text(),'My Blog')])[2]
+${left side my account}    xpath=(//a[contains(text(),'My Account')])[2]
+${message board host box button}    link=Host Box
+${your booking who i'm going to meet}    //h3[1]
+${your booking who I've met}    //h3[2]
+${your booking declined booking}    //h3[3]
+${my experience new button}    link=New Experience
+${my account first name field}    id=firstname_field
+${my account last name field}    id=lastname_field
+${my account gender field}    id=gender_field
+${my account country field}    id=country_field
+${my account city field}    id=city_field
+${my account intro field}    //div[@name='shortBio']
+${my account tell public more about}    //div[@id='view']/section/div/div[2]/div/div/form/div[8]/div/div/div
+${my account update button}    //button[@class="btn btn-primary display-block ng-isolate-scope"]
+${my account error of country field}    //div[@id='view']/section/div/div[2]/div/div/form/div[5]/div/div/p
+${my account error city}    //div[@id='view']/section/div/div[2]/div/div/form/div[5]/div[2]/div/p

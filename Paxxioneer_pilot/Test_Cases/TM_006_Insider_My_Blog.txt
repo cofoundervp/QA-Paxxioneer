@@ -1,0 +1,25 @@
+*** Settings ***
+Suite Teardown    Close Browser
+Test Teardown     Close Browser
+Library           ExtendedSelenium2Library
+Resource          ../Variables/login_form.txt
+Resource          ../Interfaces/homepage.txt
+Resource          ../Interfaces/login_form.txt
+Resource          ../Action/general action.txt
+Resource          ../Action/global_variables.txt
+Resource          ../Action/verify_point.txt
+Resource          ../Interfaces/info_page.txt
+Resource          ../Interfaces/functional_page.txt
+Resource          ../Variables/page_title.txt
+Resource          ../Interfaces/admin_page.txt
+Library           DateTime
+Library           string
+Library           String
+Resource          ../Action/global_variables.txt
+Library           Collections
+Resource          ../Interfaces/front-ent_page.txt
+Library           AutoItLibrary
+Resource          ../Interfaces/profile_page.txt
+Resource          ../Interfaces/my_blog_page.txt
+
+*** Test Cases ***

@@ -1,0 +1,109 @@
+*** Settings ***
+Test Teardown     Close Browser
+Library           ExtendedSelenium2Library
+Resource          ../Variables/login_form.txt
+Resource          ../Interfaces/homepage.txt
+Resource          ../Interfaces/login_form.txt
+Resource          ../Action/general action.txt
+Resource          ../Action/global_variables.txt
+Resource          ../Action/verify_point.txt
+Resource          ../Interfaces/info_page.txt
+Resource          ../Interfaces/functional_page.txt
+Resource          ../Variables/page_title.txt
+
+*** Test Cases ***
+TM001_TC001_verify animation will navigate to why are we here page
+    [Tags]    tm001
+    open paxxioneer
+    Click Element    ${animated icon}
+    verify page name    Why are we here?
+
+TM001_TC002_verify user can click icon and link to navigate from home page to info page and backward
+    [Tags]    test    tm001
+    open paxxioneer
+    scroll and click element    //h3    ${meet passionate people icon}
+    verify page name    Meet passionate people
+    Go Back
+    Title Should Be    Home - Paxxioneer
+    scroll and click element    //h3    ${meet passionate people link}
+    verify page name    Meet passionate people
+    Go Back
+    Title Should Be    Home - Paxxioneer
+    scroll and click element    //h3    ${make your journey icon}
+    verify page name    Make your journey meaningful
+    Go Back
+    Title Should Be    Home - Paxxioneer
+    scroll and click element    //h3    ${make your journey link}
+    verify page name    Make your journey meaningful
+    Go Back
+    Title Should Be    Home - Paxxioneer
+    scroll and click element    //h3    ${share your passion icon}
+    verify page name    Share your passions
+    Go Back
+    Title Should Be    Home - Paxxioneer
+    scroll and click element    //h3    ${share your passion link}
+    verify page name    Share your passions
+    Go Back
+    Title Should Be    Home - Paxxioneer
+
+TM001_TC003_verify info page show properly
+    [Tags]    review    tm001
+    open paxxioneer
+    Click Element    ${footer our brand link}
+    Title Should Be    ${our brand}
+    Go Back
+    Title Should Be    ${home page}
+    Click Element    ${footer who are paxxioneers link}
+    Title Should Be    ${who are paxxioneer}
+    Go Back
+    Title Should Be    ${home page}
+    Comment    Click Element    ${footer meet a paxxioneer link}
+    Comment    Title Should Be    ${meet paxxioneer}
+    Comment    Go Back
+    Comment    Title Should Be    ${home page}
+    Click Element    ${footer become a paxxioneer link}
+    Title Should Be    ${become paxxioneer}
+    Go Back
+    Title Should Be    ${home page}
+    Click Element    ${footer why are we here}
+    Title Should Be    ${why are we here}
+    Go Back
+    Title Should Be    ${home page}
+    Click Element    ${footer meet passionate people}
+    Title Should Be    ${meet passionate people}
+    Go Back
+    Title Should Be    ${home page}
+    Click Element    ${footer make your journey}
+    Title Should Be    ${make your journey meaningful}
+    Go Back
+    Title Should Be    ${home page}
+    Comment    Click Element    ${footer share your passion link}
+    Comment    Title Should Be    ${share your passion}
+    Comment    Go Back
+    Comment    Title Should Be    ${home page}
+    Click Element    ${footer blog link}
+    Title Should Be    ${blog}
+    Go Back
+    Title Should Be    ${home page}
+    Click Element    ${footer contact us link}
+    Title Should Be    ${contact us}
+
+TM001_TC004_verify user can go through all Introduction slide in top banner of homepage
+    [Tags]    test    tm001
+    open paxxioneer
+    ${flag}    Is Element Visible    ${banner share your passion}
+    Run Keyword If    ${flag} != True    Click Element    ${banner navigation right arrow}
+    ${flag}    Is Element Visible    ${banner share your passion}
+    Run Keyword If    ${flag} != True    Click Element    ${banner navigation right arrow}
+    scroll and click element    ${login button}    ${banner navigation right arrow}
+    Element Should Be Visible    ${banner make your yourney}
+    Click Button    ${banner navigation right arrow}
+    Element Should Be Visible    ${banner meet passionate peopel}
+    Click Button    ${banner navigation right arrow}
+    Element Should Be Visible    ${banner share your passion}
+
+TM001_TC005_verify meet paxxioneer page is opened
+    [Tags]    tm001
+    open paxxioneer
+    Click Element    ${meet paxxioneer link}
+    Title should be    Meet Paxxioneers - Paxxioneer

@@ -1,0 +1,262 @@
+*** Settings ***
+Resource          ../Interfaces/homepage.txt
+Resource          ../Interfaces/login_form.txt
+Library           ExtendedSelenium2Library
+Resource          ../Interfaces/signup_form.txt
+Resource          ../Interfaces/admin_page.txt
+Resource          global_variables.txt
+Library           string
+Library           String
+Resource          ../Interfaces/functional_page.txt
+Resource          ../Interfaces/profile_page.txt
+Resource          ../Interfaces/my_experience_page.txt
+Resource          ../Interfaces/booking.txt
+Library           Collections
+Library           OperatingSystem
+Resource          ../Interfaces/your_booking_page.txt
+
+*** Keywords ***
+open paxxioneer
+    Open Browser    http://staging.paxxioneer.cvp.io/    gc
+    Maximize Browser Window
+    Wait Until Element Is Visible    ${login button}
+
+open login form from homepage
+    Click Element    ${login button}
+    Wait Until Element Is Visible    ${login now button}
+
+login
+    [Arguments]    ${username}    ${password}
+    Wait Until Element Is Visible    ${username field}
+    Click Element    ${username field}
+    Input Text    ${username field}    ${username}
+    Click Element    ${password field}
+    Input Password    ${password field}    ${password}
+    Click Button    ${login now button}
+
+input value to textbox
+    [Arguments]    ${text box}    ${value}
+    Click Element    ${text box}
+    Input Text    ${text box}    ${value}
+
+open sign up form from homepage
+    Click Element    ${sign up button}
+    Wait Until Element Is Visible    ${sign up now button}
+
+sign up
+    [Arguments]    ${username}    ${email}    ${password}
+    Clear Element Text    ${su username field}
+    Input Text    ${su username field}    ${username}
+    Clear Element Text    ${su email field}
+    Input Text    ${su email field}    ${email}
+    Clear Element Text    ${su password field}
+    Input Text    ${su password field}    ${password}
+    Click Element    ${sign up now button}
+
+scroll and click element
+    [Arguments]    ${scroll to}    ${element}
+    Scroll Element Into View    ${scroll to}
+    Wait Until Element Is Visible    ${element}
+    sleep    1s
+    Click Element    ${element}
+
+click function page from dropdown
+    [Arguments]    ${page name}
+    Click Element    ${user signed in menu}
+    Click Element    ${page name}
+
+log out
+    click function page from dropdown    ${dropdown logout}
+    Wait Until Element Is Visible    ${login button}
+
+generate paxxioneer username
+    ${date}    Get Current Date    result_format=%Y-%m-%d
+    ${generate string}    Generate Random String    10
+    ${PAX USERNAME}    Catenate    SEPARATOR=-    ${date}    ${generate string}
+    [Return]    ${PAX USERNAME}
+
+create paxxioneer
+    [Arguments]    ${ac_username}    ${ac_email}    ${ac_password}
+    Click Element    ${create paxxioneer button}
+    Input Text    ${paxxioneer username field}    ${ac_username}
+    Input Text    ${paxxioneer email field}    ${ac_email}
+    Input Text    ${paxxioneer password field}    ${ac_password}
+    Click Element    ${paxxioneer submit}
+
+generate paxxioneer email
+    ${email domain}    Set Variable    @mailinator.com
+    ${date}    Get Current Date    result_format=%Y-%m-%d
+    ${generate string}    Generate Random String    10
+    ${temp}    Catenate    SEPARATOR=-    ${date}    ${generate string}
+    ${PAX EMAIL}    Catenate    SEPARATOR=    ${temp}    ${email domain}
+    [Return]    ${PAX EMAIL}
+
+open paxxioneer profile
+    [Arguments]    ${paxxioneer username}
+    ${url}    Set Variable    http://staging.paxxioneer.cvp.io/paxxioneer/username/home?ref=logo
+    ${paxxioneer username}    String.Convert To Lowercase    ${paxxioneer username}
+    ${url}    Replace String    ${url}    username    ${paxxioneer username}
+    Go To    ${url}
+    sleep    3s
+
+go to my account page
+    open paxxioneer
+    open login form from homepage
+    login    ${PAX USERNAME}    Abc123
+    click function page from dropdown    ${dropdown my account link}
+
+select country city
+    [Arguments]    ${country name}    ${city name}
+    Select From List By Value    ${my account country field}    ${country name}
+    Select From List    ${my account city field}    ${city name}
+    Click Button    ${my account update button}
+    ${message}    Get Text    css=div.message.ng-binding
+    Should Be Equal    ${message}    Profile updated.    ${country name} | ${city name} not matched
+
+verify message popup
+    [Arguments]    ${expected text}
+    ${message}    Get Text    css=div.message.ng-binding
+    Should Be Equal    ${message}    ${expected text}
+
+set up with new paxxioneer accout
+    open paxxioneer
+    open login form from homepage
+    login    admin    admin12A
+    ${PAX USERNAME}    generate paxxioneer username
+    ${PAX EMAIL}    generate paxxioneer email
+    create paxxioneer    ${PAX USERNAME}    ${PAX EMAIL}    Abc123
+    Sleep    4s
+    log out
+    login    ${PAX USERNAME}    ${PAX EMAIL}
+
+select background word
+    [Arguments]    ${word}
+    scroll and click element    css=h2    ${backgroud word dropdown}
+    Select From List By Value    ${backgroud word dropdown}    ${word}
+
+verify tag text on avatar
+    [Arguments]    ${tag position}    ${text expected}
+    ${tag on avatar element}    Set Variable    //div[@id='headingOne']/div[2]/ul/li/span[position]
+    ${tag on avatar element}    Replace String    ${tag on avatar element}    position    ${tag position}
+    ${temp}    Get Text    ${tag on avatar element}
+    Should Be Equal    ${temp}    ${text expected}
+
+verify tag text on profile front end
+    [Arguments]    ${tag position}    ${expected text}
+    ${tag on profile front-end}    Set Variable    //div[@id='view']/hero/section/div[3]/div/div/div[2]/div/span[position]
+    ${tag on profile front-end}    Replace String    ${tag on profile front-end}    position    ${tag position}
+    ${temp}    Get Text    ${tag on profile front-end}
+    Should Be Equal    ${temp}    ${expected text}
+
+delete tag
+    [Arguments]    ${tag position}
+    ${x tag}    Set Variable    xpath=(//a[contains(text(),'×')])[position]
+    ${x tag}    Replace String    ${x tag}    position    ${tag position}
+    scroll and click element    ${action word textbox}    ${x tag}
+
+up the paxxioneer to first place
+    [Arguments]    ${currentposition}
+    ${temp}    Set Variable    ${currentposition}
+    : FOR    ${j}    IN RANGE    1    ${temp}
+    \    sleep    1s
+    \    Click Element    //div[@id='view']/section/div/div[2]/div/table/tbody/tr[${currentposition}]/td[4]/a[1]/span
+    \    ${currentposition}    Set Variable    ${currentposition -1}
+
+get position of paxxioneer in featured table
+    [Arguments]    ${username}
+    ${position}    Set Variable    ${EMPTY}
+    : FOR    ${i}    IN RANGE    1    100
+    \    ${temp}    Get Text    //div[@id='view']/section/div/div[2]/div/table/tbody/tr[${i}]/td[1]
+    \    ${position}    Set Variable If    "${temp}" == "${username}"    ${i}
+    \    Run Keyword If    ${position} != None    Exit For Loop
+    [Return]    ${position}
+
+add paxxioneer to featured table
+    [Arguments]    ${username}
+    Input Text    ${featured paxxioneer text box}    ${username}
+    Click Element    css=a.ng-scope
+    Click Button    ${featured paxxioneer add button}
+
+remove paxxioneer from featured table
+    [Arguments]    ${username}
+    ${position}    get position of paxxioneer in featured table    ${username}
+    # element below is position of remove button
+    Click Element    //div[@id='view']/section/div/div[2]/div/table/tbody/tr[${position}]/td[4]/a[4]/span
+    Click Button    //div[3]/button
+
+close dropdown menu in my experience page
+    ${flag}    Is Element Visible    ${dropdown logout}
+    Run Keyword If    ${flag} == True    Click Element    css=h3.mail-title.ng-scope
+
+get booking info
+    ${booking info date and time}    Get Text    ${payment booking datetime}
+    Set Global Variable    ${booking info date and time}
+    ${booking info single price}    Get Text    ${payment single price}
+    Set Global Variable    ${booking info single price}
+    ${booking info final price}    Get Text    ${payment final price}
+    Set Global Variable    ${booking info final price}
+    ${booking info number of participant}    Get Text    ${payment number of customer}
+    Set Global Variable    ${booking info number of participant}
+    ${booking info total price}    Get Text    ${payment total price}
+    Set Global Variable    ${booking info total price}
+
+fill booking info
+    [Arguments]    ${first name}    ${last name}    ${country code}    ${city}
+    Comment    Run Keyword If    '${payment first name field}' == '${EMPTY}'    input text    ${payment first name field}    ${first name}
+    Comment    Run Keyword If    '${payment last name field}' == '${EMPTY}'    input text    ${payment first name field}    ${last name}
+    Comment    Run Keyword If    '${payment country field}' == '${EMPTY}'    Select From List By Value    ${payment country field}    ${country code}
+    Comment    Run Keyword If    '${payment city field}' == '${EMPTY}'    Select From List By Value    ${payment country field}    ${city}
+    input text    ${payment first name field}    ${first name}
+    input text    ${payment last name field}    ${last name}
+    Select From List By Value    ${payment country field}    ${country code}
+    Select From List By Value    ${payment city field}    ${city}
+
+counting temp
+    [Arguments]    ${count}
+    ${count}    Set Variable    ${count+1}
+
+click coming soon flag
+    [Arguments]    ${username}
+    ${position}    get position of paxxioneer in featured table    ${username}
+    # element below is position of remove button
+    Click Element    //div[@id='view']/section/div/div[2]/div/table/tbody/tr[${position}]/td[4]/a[3]/span
+    Click Button    //button[contains(text(),'Ok')]
+
+turn on or off coming soon
+    [Arguments]    ${paxxioneer name}
+    add paxxioneer to featured table    ${paxxioneer name}
+    ${position}    get position of paxxioneer in featured table    ${paxxioneer name}
+    click coming soon flag    ${paxxioneer name}
+
+setup marionette
+    ${ff default caps}    Evaluate    sys.modules['selenium.webdriver'].common.desired_capabilities.DesiredCapabilities.FIREFOX    sys,selenium.webdriver
+    Set To Dictionary    ${ff default caps}    marionette=${True}
+
+global wait
+    sleep    3s
+
+config
+    Set Selenium Implicit Wait    15s
+
+click by mouse
+    [Arguments]    ${button}
+    Mouse Over    ${button}
+    Mouse Down    ${button}
+    Mouse Up    ${button}
+
+return true status for booking status ticket
+    [Arguments]    ${status}
+    ${arg_true status}    Replace String    ${ybp_booking status button_locator}    currentstatus    ${status}
+    [Return]    ${arg_true status}
+
+return true locator of the first activity ticket in your booking page
+    [Arguments]    ${activity name}
+    ${true activity ticket}    Replace String    ${ybp_ticket_activity name_position}    activityname    ${activity name}
+    [Return]    ${true activity ticket}
+
+click Request to Book and handling error
+    scroll and click element    ${payment introduce yourself field}    ${payment request booking button}
+    sleep    5s
+    ${flag}    Is Element Visible    //div[@class="col-sm-12 errors-container has-error"]
+    Run Keyword If    '${flag}' == 'True'    scroll and click element    ${payment introduce yourself field}    ${payment request booking button}
+    sleep    5s

@@ -1,0 +1,31 @@
+*** Variables ***
+${new experience button}    link=New Experience
+${experience name text field}    id=name_field
+${experience cost field}    id=cost_field
+${experience cost type}    id=costtype_field
+${experience step 2 timeslot button}    //button[@class="btn btn-primary display-block ng-scope ng-isolate-scope"]
+${experience add button on timeslot}    xpath=(//input[@value='Add'])[position]
+${timetable add button in slot position}    //div[@id='view']/section/div/div[2]/div/div/div/div/div[2]/form/article/div/div/div/div/table/tbody/tr[row]/td[column]/div/input    # row = 1, 3, 6, 9, 12, 15, 17
+${minus button on slot}    //div[@id='view']/section/div/div[2]/div/div/div/div/div[2]/form/article/div/div/div/div/table/tbody/tr[row]/td[col]/div/div[position]/div[2]/div/span    # postion is the position of the slot in a date
+${add button in slot}    //div[@id='view']/section/div/div[2]/div/div/div[2]/form/article/div/div/div/div/table/tbody/tr[row]/td[col]/div/div[position]/div[2]/div/span[3]    # position is the position of the slot in the date
+${remove slot}    //div[@id='view']/section/div/div[2]/div/div/div[2]/form/article/div/div/div/div/table/tbody/tr[8]/td[4]/div/div[position]/div[2]/div[2]/i    # position is the positon of X button in the slot within date
+${start time position}    //div[@id='view']/section/div/div[2]/div/div/div[2]/form/article/div/div/div/div/table/tbody/tr[8]/td[4]/div/div[position]/div/input
+${end time position}    //div[@id='view']/section/div/div[2]/div/div/div[2]/form/article/div/div/div/div/table/tbody/tr[8]/td[4]/div/div[position]/div/input[2]
+${my experience month table}    css=table.timeslot-table
+${experience country field}    id=country_field
+${experience city field}    id=city_field
+${edit button of the newest experience}    //div[@id='view']/section/div/div[2]/div/div/article/div/div/div/ul/li/div[4]/a/span
+${edit time button of the newest experience}    //div[@id='view']/section/div/div[2]/div/div/article/div/div/div/ul/li/div[4]/a[2]/span
+${my experience update button}    //button[@class="btn btn-primary display-block ng-scope ng-isolate-scope"]
+${timeslot save/apply button}    //div[@class="btn-save-timeslot ng-scope"]
+${timeslot start time postion}    //div[@id='view']/section/div/div[2]/div/div/div/div/div[2]/form/article/div/div/div/div/table/tbody/tr[row]/td[column]/div/div[time]/div/input[1]
+${timeslot end time}    //div[@id='view']/section/div/div[2]/div/div/div/div/div[2]/form/article/div/div/div/div/table/tbody/tr[row]/td[column]/div/div[time]/div/input[2]
+${timepicker hour}    css=span.timepicker-hour
+${timepicket minute}    css=span.timepicker-minute
+${hour position}    css=div.timepicker-hours > table.table-condensed.xpos.ypos
+${first activity}    css=h4.entry-title.ng-binding
+${book button on front end}    //aside[@id='text-2']/div[2]/div[2]/div[2]/button
+${month button}    //a[@class='btn btn-xs btn-info' and contains(text(),'Month')]
+${my experience note}    css=div[name="experienceNote"]
+${my experience policty}    css=div[name="experiencePolicy"]
+${myexp_save button on confirm popup}    //button[@class="btn ng-binding ng-scope btn-danger" and contains(text(),'Save')]

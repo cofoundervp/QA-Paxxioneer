@@ -1,0 +1,574 @@
+*** Settings ***
+Suite Teardown    Close Browser
+Test Teardown     Close Browser
+Library           ExtendedSelenium2Library
+Resource          ../Variables/login_form.txt
+Resource          ../Interfaces/homepage.txt
+Resource          ../Interfaces/login_form.txt
+Resource          ../Action/general action.txt
+Resource          ../Action/global_variables.txt
+Resource          ../Action/verify_point.txt
+Resource          ../Interfaces/info_page.txt
+Resource          ../Interfaces/functional_page.txt
+Resource          ../Variables/page_title.txt
+Resource          ../Interfaces/admin_page.txt
+Library           DateTime
+Library           string
+Library           String
+Resource          ../Action/global_variables.txt
+Library           Collections
+Resource          ../Interfaces/front-ent_page.txt
+Library           AutoItLibrary
+Resource          ../Interfaces/profile_page.txt
+Resource          ../Action/my_experience_action.txt
+Resource          ../Interfaces/your_booking_page.txt
+Resource          ../Interfaces/message_page.txt
+
+*** Test Cases ***
+TM007_TC001_verify user can open My Experience page
+    open paxxioneer
+    open login form from homepage
+    login    ${PAX USERNAME}    Abc123
+    click function page from dropdown    ${dropdown my experience}
+    Element Should Be Visible    ${new experience button}
+
+TM007_TC002_verify user can create new experience without date
+    open paxxioneer
+    open login form from homepage
+    login    ${PAX USERNAME}    Abc123
+    click function page from dropdown    ${dropdown my experience}
+    ${experience name}    generate experience name
+    create experience    ${experience name}    10    Person
+    Set Global Variable    ${experience name}    ${experience name}
+
+TM007_TC003_verify new created activity show on paxxioneer's profile
+    open paxxioneer
+    open paxxioneer profile    ${PAX USERNAME}
+    verify new created activity on top and in profile page    ${experience name}
+
+TM007_TC004_verify exprience can be updated
+    open paxxioneer
+    open login form from homepage
+    login    ${PAX USERNAME}    Abc123
+    click function page from dropdown    ${dropdown my experience}
+    ${experience name}    generate experience name
+    Set Global Variable    ${experience name}    ${experience name}
+    edit info of the newest experience    ${experience name}    100    Session
+
+TM007_TC005_verify user can add date to an existing activity
+    [Timeout]
+    open paxxioneer
+    open login form from homepage
+    login    ${PAX USERNAME}    Abc123
+    click function page from dropdown    ${dropdown my experience}
+    close dropdown menu in my experience page
+    open timetable of the first experience
+    #${today column}    get today column
+    #${today row}    get today row
+    #check valid    ${today column}    ${today row}
+    #${today column}    Set Variable    ${col}
+    #${today row}    Set Variable    ${row}
+    Log    today date is at column ${today column} and row ${today row}
+    add hour    ${today column}    ${today row}
+    scroll and click element    //div[@id="top"]    ${timeslot save/apply button}
+    Click Button    ${myexp_save button on confirm popup}
+    verify message popup    Timetable updated.
+
+TM007_TC006_verify new added timeslot is available on front-end
+    open paxxioneer
+    open login form from homepage
+    login    ${customer global}    Abc123
+    open paxxioneer profile    ${PAX USERNAME}
+    scroll and click element    link=Profile    ${first activity}
+    ${today day}    get today day
+    click today on booking calendar    ${today day}
+    Element Should Be Visible    ${book button on front end}
+
+TM007_TC007_verify payment page
+    open paxxioneer
+    open login form from homepage
+    login    ${customer global}    Abc123
+    open paxxioneer profile    ${PAX USERNAME}
+    scroll and click element    link=Profile    ${first activity}
+    ${today day}    get today day
+    click today on booking calendar    ${today day}
+    Click Button    ${book button on front end}
+    #Verify header text Payment is shown
+    ${check point}    Get Text    css=h2
+    Should Be Equal    ${check point}    Payment
+    get booking info
+    fill booking info    Giang    Hoang    VN    Ho Chi Minh
+
+TM007_TC008_verify user cannot book without message
+    open paxxioneer
+    open login form from homepage
+    login    ${customer global}    Abc123
+    open paxxioneer profile    ${PAX USERNAME}
+    scroll and click element    link=Profile    ${first activity}
+    ${today day}    get today day
+    click today on booking calendar    ${today day}
+    Click Button    ${book button on front end}
+    sleep    5s
+    #Verify header text Payment is shown
+    ${check point}    Get Text    css=h2
+    Should Be Equal    ${check point}    Payment
+    get booking info
+    fill booking info    Giang    Hoang    VN    Ho Chi Minh
+    Wait Until Element Is Enabled    ${payment request booking button}
+    scroll and click element    ${payment introduce yourself field}    ${payment request booking button}
+    # xpath below is the xpath of error message
+    Element Should Be Visible    //p[@class="help-block" and contains(text(),'Please enter your message.')]
+
+TM007_TC009_verify user can see thank you page after booking and get first message
+    open paxxioneer
+    open login form from homepage
+    login    ${customer global}    Abc123
+    open paxxioneer profile    ${PAX USERNAME}
+    scroll and click element    link=Profile    ${first activity}
+    ${today day}    get today day
+    click today on booking calendar    ${today day}
+    Click Button    ${book button on front end}
+    #Verify header text Payment is shown
+    ${check point}    Get Text    css=h2
+    Should Be Equal    ${check point}    Payment
+    sleep    7s
+    get booking info
+    fill booking info    Giang    Hoang    VN    Ho Chi Minh
+    ${global first message}    Generate Random String    20
+    Set Global Variable    ${global first message}
+    Input Text    ${payment introduce yourself field}    ${global first message}
+    sleep    5s
+    #check if credit card field visable?
+    fill credit card
+    click Request to Book and handling error
+    ${check point}    get text    css=h2.text-center
+    Should Be Equal    ${check point}    Thank you
+
+TM007_TC010_verify booking info on thank you page match booking info on payment page
+    open paxxioneer
+    open login form from homepage
+    login    ${customer global}    Abc123
+    open paxxioneer profile    ${PAX USERNAME}
+    scroll and click element    link=Profile    ${first activity}
+    ${today day}    get today day
+    click today on booking calendar    ${today day}
+    Click Button    ${book button on front end}
+    sleep    5s
+    #Verify header text Payment is shown
+    ${check point}    Get Text    css=h2
+    Should Be Equal    ${check point}    Payment
+    get booking info
+    fill booking info    Giang    Hoang    VN    Ho Chi Minh
+    ${global first message}    Generate Random String    20
+    Set Global Variable    ${global first message}
+    Input Text    ${payment introduce yourself field}    ${global first message}
+    #check if credit card field visable?
+    fill credit card
+    click Request to Book and handling error
+    ${check point}    get text    css=h2.text-center
+    Should Be Equal    ${check point}    Thank you
+    ${payment date and time}    Get Text    ${payment booking datetime}
+    Should be equal    ${booking info date and time}    ${payment date and time}
+    ${payment info single price}    Get Text    ${payment single price}
+    Should be equal    ${booking info single price}    ${payment info single price}
+    ${payment info final price}    Get Text    ${payment final price}
+    Should be equal    ${booking info final price}    ${payment info final price}
+    ${payment info number of participant}    Get Text    ${payment number of customer}
+    Should be equal    ${booking info number of participant}    ${payment info number of participant}
+    ${payment info total price}    Get Text    ${payment total price}
+    Should be equal    ${booking info total price}    ${payment info total price}
+
+TM007_TC011_verify new ticket is shown on Your Booking page of customer
+    open paxxioneer
+    open login form from homepage
+    login    ${customer global}    Abc123
+    open paxxioneer profile    ${PAX USERNAME}
+    ${check}    Get Text    ${first activity}
+    click function page from dropdown    ${dropdown your booking link}
+    ${check 2}    Get Text    ${ybp_the first activity name}
+    Should Be Equal    ${check 2}    ${check}
+
+TM007_TC012_customer_verify new ticket booking status New
+    open paxxioneer
+    open login form from homepage
+    login    ${customer global}    Abc123
+    open paxxioneer profile    ${PAX USERNAME}
+    click function page from dropdown    ${dropdown your booking link}
+    ${booking status}    Get Text    ${ybp_the first booking status}
+    Should Be Equal    ${booking status}    New
+
+TM007_TC013_paxxioneer_verify new ticket booking status New
+    open paxxioneer
+    open login form from homepage
+    login    ${PAX USERNAME}    Abc123
+    click function page from dropdown    ${dropdown your booking link}
+    ${booking status}    Get Text    ${ybp_the first booking status}
+    Should Be Equal    ${booking status}    New
+
+TM007_TC014_paxxioneer_verify click new button will open message and new become pending
+    open paxxioneer
+    open login form from homepage
+    login    ${PAX USERNAME}    Abc123
+    click function page from dropdown    ${dropdown your booking link}
+    # verify first the booking status is NEW
+    ${booking status text}    Get Text    ${ybp_the first booking status}
+    Should Be Equal    ${booking status text}    New
+    # click booking status
+    scroll and click element    css=h3    ${ybp_the first booking status}
+    sleep    2s
+    # verify chat screen show
+    Element Should Be Visible    id=btn-chat
+    Go Back
+    # verify after clicking the booking status is Pending
+    ${booking status text}    Get Text    ${ybp_the first booking status}
+    Should Be Equal    ${booking status text}    Pending
+
+TM007_TC015_customer_verify ticket is opened by paxxioneer has view on left and pending on right
+    open paxxioneer
+    open login form from homepage
+    login    ${customer global}    Abc123
+    click function page from dropdown    ${dropdown your booking link}
+    ${booking status text}    Get Text    ${ybp_the first booking status}
+    Should Be Equal    ${booking status text}    Pending
+
+TM007_TC016_customer_verify booking info match original info
+    open paxxioneer
+    open login form from homepage
+    login    ${customer global}    Abc123
+    click function page from dropdown    ${dropdown your booking link}
+    scroll and click element    css=h3    ${ybp_the first ticket location}
+    ${payment date and time}    Get Text    ${payment booking datetime}
+    Should be equal    ${booking info date and time}    ${payment date and time}
+    ${payment info single price}    Get Text    ${payment single price}
+    Should be equal    ${booking info single price}    ${payment info single price}
+    ${payment info final price}    Get Text    ${payment final price}
+    Should be equal    ${booking info final price}    ${payment info final price}
+    ${payment info number of participant}    Get Text    ${payment number of customer}
+    Should be equal    ${booking info number of participant}    ${payment info number of participant}
+    ${payment info total price}    Get Text    ${payment total price}
+    Should be equal    ${booking info total price}    ${payment info total price}
+
+TM007_TC017_paxxioneer_verify clicking pending open message, first message is correct, and can accept ticket
+    open paxxioneer
+    open login form from homepage
+    login    ${PAX USERNAME}    Abc123
+    click function page from dropdown    ${dropdown your booking link}
+    scroll and click element    css=h3    ${ybp_the first ticket location}
+    ${current url}    Get Location
+    Get Length    ${current url}
+    ${booking id}    String.Fetch From Right    ${current url}    /
+    Set Global Variable    ${booking id}
+    Go Back
+    scroll and click element    css=h3    ${ybp_the first booking status}
+    ${first text}    get text    css=p.content.ng-binding
+    #verify point    first message is correct
+    Should Be Equal    ${first text}    ${global first message}
+    #verify message on popup when clicking accept is correct
+    Click Button    ${msg accept button}
+    ${popup text}    Get Text    //div[@class='ng-binding ng-scope']
+    Should Be Equal    ${popup text}    Accept this booking?
+    Click Button    ${msg popup cancel button}
+    Element Should Be Visible    ${msg accept button}
+    Element Should Be Visible    ${msg decline button}
+    Click Button    ${msg decline button}
+    ${popup text}    Get Text    //div[@class='ng-binding ng-scope']
+    Should Be Equal    ${popup text}    Decline this booking?
+    Click Button    ${msg popup cancel button}
+    Element Should Be Visible    ${msg accept button}
+    Element Should Be Visible    ${msg decline button}
+    # verify user can click accept button
+    Click Button    ${msg accept button}
+    Click Button    ${msg popup accept button}
+    Element Should Be Visible    ${msg accepted label}
+    #verify accepted ticket that is not over time still in "Who I'm going to meet..." group. Booking status = accept
+    Go Back
+    ${booking status text}    get text    ${ybp_the first booking status}
+    Should Be Equal    ${booking status text}    Accepted
+
+TM007_TC018_verify clicking on Accept button will open Message screen
+    open paxxioneer
+    open login form from homepage
+    login    ${PAX USERNAME}    Abc123
+    click function page from dropdown    ${dropdown your booking link}
+    ${booking status text}    Get Text    ${ybp_the first booking status}
+    Should Be Equal    ${booking status text}    Accepted
+    scroll and click element    css=h3    ${ybp_the first booking status}
+    Element Should Be Visible    ${msg send button}
+
+TM007_TC019_verify paxxioneer can send message
+    open paxxioneer
+    open login form from homepage
+    login    ${PAX USERNAME}    Abc123
+    click function page from dropdown    ${dropdown your booking link}
+    scroll and click element    css=h3    ${ybp_the first booking status}
+    ${PAX MESSAGE}    Generate Random String    20
+    Input Text    ${msg text field}    ${PAX MESSAGE}
+    Set Global Variable    ${PAX MESSAGE}
+    Click Button    ${msg send button}
+    Element Should Be Visible    //p[@class="content ng-binding delivered" and contains(text(),'${PAX MESSAGE}')]
+
+TM007_TC020_verify customer can receive message
+    open paxxioneer
+    open login form from homepage
+    login    ${customer global}    Abc123
+    click function page from dropdown    ${dropdown your booking link}
+    scroll and click element    css=h3    ${ybp_the first booking status}
+    Element Should Be Visible    //p[@class="content ng-binding" and contains(text(),'${PAX MESSAGE}')]    Cannot find message from Paxxioneer
+    ${CUS MESSAGE}    Generate Random String    10
+    Input Text    ${msg text field}    ${CUS MESSAGE}
+    Set Global Variable    ${CUS MESSAGE}
+    Click Button    ${msg send button}
+    Element Should Be Visible    //p[@class="content ng-binding delivered" and contains(text(),'${CUS MESSAGE}')]
+
+TM007_TC021_verify paxxioneer received message from customer
+    open paxxioneer
+    open login form from homepage
+    login    ${PAX USERNAME}    Abc123
+    click function page from dropdown    ${dropdown your booking link}
+    scroll and click element    css=h3    ${ybp_the first booking status}
+    Element Should Be Visible    //p[@class="content ng-binding" and contains(text(),'${CUS MESSAGE}')]    Cannot find message from customer
+
+TM007_TC022_verify accepted ticket that is over time can be founded in list 2, view button change to receipt button
+    [Tags]    test
+    open paxxioneer
+    open login form from homepage
+    login    ${PAX USERNAME}    Abc123
+    click function page from dropdown    ${dropdown your booking link}
+    # wait for ticket over time
+    ${new minute}    get current minute
+    ${change rounded minute}    Set Variable If    ${global rounded_minute} == 0    60    ${global rounded_minute}
+    ${sleep time}    Evaluate    ${global rounded_minute} - ${new minute} + 5
+    Convert To String    ${sleep time}
+    Run Keyword If    ${sleep time} >= 0    sleep    ${sleep time}m
+    # reload page and see ticket go to 2nd group
+    Reload Page
+    ${left button}    Replace String    ${ybp_view-receipt-declined_button position}    poslist    1
+    ${left button}    Replace String    ${left button}    posticket    1
+    ${left button text}    Get Text    ${left button}
+    Should Be Equal    ${left button text}    Receipt
+    ${right button}    Replace String    ${ybp_accepted-pending-expried-recipt right_button postion}    poslist    1
+    ${right button}    Replace String    ${right button}    posticket    1
+    ${right button text}    Get Text    ${right button}
+    Should Be Equal    ${right button text}    Accepted
+    scroll and click element    //h3[2]    ${left button}
+    ${receipt booking id}    Get Text    //p[@class='ng-binding' and contains(text(),'Receipt for Booking')]
+    ${receipt booking id}    String.Fetch From Right    ${receipt booking id}    '#'
+    Should Be Equal    ${receipt booking id}    ${booking id}
+
+TM007_TC023_verify note can only accept 1000 characters
+    open paxxioneer
+    open login form from homepage
+    login    ${PAX USERNAME}    Abc123
+    click function page from dropdown    ${dropdown my experience}
+    close dropdown menu in my experience page
+    ${flag}    Is Element Visible    ${new experience button}
+    Run Keyword If    ${flag} == True    scroll and click element    ${message button}    ${new experience button}
+    ...    ELSE    Log    FAIL    New Experience button is not founded
+    ${experience name}    Generate Random String    15
+    Input Text    ${experience name text field}    ${experience name}
+    Clear Element Text    ${experience cost field}
+    Input Text    ${experience cost field}    10
+    Select From List By Value    ${experience cost type}    Session
+    select country city for new experience    VN    Ho Chi Minh
+    ${note text}    generate words    200
+    Input Text    ${my experience note}    ${note text}
+    ${inputted character}    Get Text    ${my experience note}
+    ${check}    Get Length    ${inputted character}
+    Log    ${check}
+    Run Keyword If    ${check} > 1000    Fail    Over 1000 characters can be inputted
+    ${policy text}    generate words    101
+    Input Text    ${my experience policty}    ${policy text}
+    ${inputted character}    Get Text    ${my experience policty}
+    ${check}    Get Length    ${inputted character}
+    Log    ${check}
+    Run Keyword If    ${check} > 606    Fail    Over 100 words can be input
+    Click Button    ${experience step 2 timeslot button}
+
+TM007_TC024_verify user can create per person activity
+    ${number of participant}    Set Variable    4
+    Set Global Variable    ${number of participant}
+    open paxxioneer
+    open login form from homepage
+    login    ${PAX USERNAME}    Abc123
+    click function page from dropdown    ${dropdown my experience}
+    ${tc price}    random number
+    create experience    Per Person    ${tc price}    Person
+    add hour    ${today column}    ${today row}
+    scroll and click element    //div[@id="top"]    ${timeslot save/apply button}
+    Click Button    ${myexp_save button on confirm popup}
+    verify message popup    Timetable updated.
+    add participant    ${today column}    ${today row}    1    ${number of participant}
+    scroll and click element    //div[@id="top"]    ${timeslot save/apply button}
+    Click Button    ${myexp_save button on confirm popup}
+    verify message popup    Timetable updated.
+    # logout then login with customer account
+    sleep    5s
+    logout
+    open login form from homepage
+    login    ${customer global}    Abc123
+    open paxxioneer profile    ${PAX USERNAME}
+    #open activity
+    scroll and click element    link=Profile    ${first activity}
+    ${today day}    get today day
+    click today on booking calendar    ${today day}
+    Element Should Be Visible    ${book button on front end}
+    ${text}    Get Text    ${price calculate and text}
+    Should Be Equal    ${text}    HKD${tc price} per person x 1
+
+TM007_TC025_verify user can select number of participant and the price is update if activity type is per person
+    open paxxioneer
+    open login form from homepage
+    login    ${PAX USERNAME}    Abc123
+    click function page from dropdown    ${dropdown my experience}
+    ${tc price}    random number
+    create experience    Per Person    ${tc price}    Person
+    add hour    ${today column}    ${today row}
+    scroll and click element    //div[@id="top"]    ${timeslot save/apply button}
+    Click Button    ${myexp_save button on confirm popup}
+    verify message popup    Timetable updated.
+    add participant    ${today column}    ${today row}    1    ${number of participant}
+    scroll and click element    //div[@id="top"]    ${timeslot save/apply button}
+    Click Button    ${myexp_save button on confirm popup}
+    verify message popup    Timetable updated.
+    # logout then login with customer account
+    sleep    4s
+    logout
+    open login form from homepage
+    login    ${customer global}    Abc123
+    open paxxioneer profile    ${PAX USERNAME}
+    #open activity
+    scroll and click element    link=Profile    ${first activity}
+    ${today day}    get today day
+    click today on booking calendar    ${today day}
+    Element Should Be Visible    ${book button on front end}
+    verify text and total price    ${number of participant}    ${tc price}    person
+
+TM007_TC026_verify user can create session activity
+    open paxxioneer
+    open login form from homepage
+    login    ${PAX USERNAME}    Abc123
+    click function page from dropdown    ${dropdown my experience}
+    ${tc price}    random number
+    create experience    Per Session    ${tc price}    Session
+    add hour    ${today column}    ${today row}
+    scroll and click element    //div[@id="top"]    ${timeslot save/apply button}
+    Click Button    ${myexp_save button on confirm popup}
+    verify message popup    Timetable updated.
+    add participant    ${today column}    ${today row}    1    ${number of participant}
+    scroll and click element    //div[@id="top"]    ${timeslot save/apply button}
+    Click Button    ${myexp_save button on confirm popup}
+    verify message popup    Timetable updated.
+    # logout then login with customer account
+    sleep    5s
+    logout
+    open login form from homepage
+    login    ${customer global}    Abc123
+    open paxxioneer profile    ${PAX USERNAME}
+    #open activity
+    scroll and click element    link=Profile    ${first activity}
+    ${today day}    get today day
+    click today on booking calendar    ${today day}
+    Element Should Be Visible    ${book button on front end}
+    ${text}    Get Text    ${price calculate and text}
+    Should Be Equal    ${text}    HKD${tc price} per session x 1
+
+TM007_TC027_verify user can select number of participant and the price is not updated if activity type is per session
+    open paxxioneer
+    open login form from homepage
+    login    ${PAX USERNAME}    Abc123
+    click function page from dropdown    ${dropdown my experience}
+    ${tc price}    random number
+    create experience    Per Session    ${tc price}    Session
+    add hour    ${today column}    ${today row}
+    scroll and click element    //div[@id="top"]    ${timeslot save/apply button}
+    Click Button    ${myexp_save button on confirm popup}
+    verify message popup    Timetable updated.
+    add participant    ${today column}    ${today row}    1    ${number of participant}
+    scroll and click element    //div[@id="top"]    ${timeslot save/apply button}
+    Click Button    ${myexp_save button on confirm popup}
+    verify message popup    Timetable updated.
+    # logout then login with customer account
+    sleep    6s
+    logout
+    open login form from homepage
+    login    ${customer global}    Abc123
+    open paxxioneer profile    ${PAX USERNAME}
+    #open activity
+    scroll and click element    link=Profile    ${first activity}
+    ${today day}    get today day
+    click today on booking calendar    ${today day}
+    Element Should Be Visible    ${book button on front end}
+    verify text and total price    ${number of participant}    ${tc price}    session
+
+TM007_TC028_verify user can create per hour activity
+    open paxxioneer
+    open login form from homepage
+    login    ${PAX USERNAME}    Abc123
+    click function page from dropdown    ${dropdown my experience}
+    ${tc price}    random number
+    create experience    Per hour    ${tc price}    Hour
+    add hour    ${today column}    ${today row}
+    scroll and click element    //div[@id="top"]    ${timeslot save/apply button}
+    Click Button    ${myexp_save button on confirm popup}
+    verify message popup    Timetable updated.
+    add participant    ${today column}    ${today row}    1    ${number of participant}
+    scroll and click element    //div[@id="top"]    ${timeslot save/apply button}
+    Click Button    ${myexp_save button on confirm popup}
+    verify message popup    Timetable updated.
+    # logout then login with customer account
+    sleep    5s    wait for popup dismiss
+    logout
+    open login form from homepage
+    login    ${customer global}    Abc123
+    open paxxioneer profile    ${PAX USERNAME}
+    #open activity
+    scroll and click element    link=Profile    ${first activity}
+    ${today day}    get today day
+    click today on booking calendar    ${today day}
+    Element Should Be Visible    ${book button on front end}
+    ${text}    Get Text    ${price calculate and text}
+    Should Be Equal    ${text}    HKD${tc price} per hour x 0.25
+
+TM007_TC029_verify user can select number of participant and the price is not updated if activity type is per hour
+    open paxxioneer
+    open login form from homepage
+    login    ${PAX USERNAME}    Abc123
+    click function page from dropdown    ${dropdown my experience}
+    ${tc price}    random number
+    create experience    Per hour    ${tc price}    Hour
+    add hour    ${today column}    ${today row}
+    scroll and click element    //div[@id="top"]    ${timeslot save/apply button}
+    Click Button    ${myexp_save button on confirm popup}
+    verify message popup    Timetable updated.
+    add participant    ${today column}    ${today row}    1    ${number of participant}
+    scroll and click element    //div[@id="top"]    ${timeslot save/apply button}
+    Click Button    ${myexp_save button on confirm popup}
+    verify message popup    Timetable updated.
+    # logout then login with customer account
+    sleep    6s
+    logout
+    open login form from homepage
+    login    ${customer global}    Abc123
+    open paxxioneer profile    ${PAX USERNAME}
+    #open activity
+    scroll and click element    link=Profile    ${first activity}
+    ${today day}    get today day
+    click today on booking calendar    ${today day}
+    Element Should Be Visible    ${book button on front end}
+    verify text and total price    ${number of participant}    ${tc price}    hour
+
+Outdated_TM007_TC012_customer_verify new ticket has view button on left and edit button on right
+    [Tags]    outdated
+    open paxxioneer
+    open login form from homepage
+    login    ${customer global}    Abc123
+    open paxxioneer profile    ${PAX USERNAME}
+    click function page from dropdown    ${dropdown your booking link}
+    ${temp}    Replace String    ${ybp_view-receipt-declined_button position}    poslist    1
+    ${temp}    Replace String    ${temp}    posticket    1
+    ${left button text}    Get Text    ${temp}
+    Should Be Equal    ${left button text}    View
+    ${temp}    Replace String    ${ybp_accepted-pending-expried-recipt right_button postion}    poslist    1
+    ${temp}    Replace String    ${temp}    posticket    1
+    ${right button text}    Get Text    ${temp}
+    Should Be Equal    ${right button text}    Edit

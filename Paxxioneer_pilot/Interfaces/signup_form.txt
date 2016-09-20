@@ -1,0 +1,16 @@
+*** Variables ***
+${su username field}    //input[@id='login-username']
+${su email field}    xpath=(//input[@id='login-email'])[2]
+${su password field}    name=password
+${login link on sign up form}    xpath=(//a[contains(text(),'Log In')])[1]
+${su username instruction}    css=p.small
+${su password instruction}    //div[@id='PopUpSignUp']/form/div[5]/div/p
+${su error password must 6 characters}    //div[@id='PopUpSignUp']/form/div[5]/div/div/p
+${su error username empty}    css=div.form-group.has-error > p.help-block
+${su error email empty}    //div[@id='PopUpSignUp']/form/div[4]/div/div/p[2]
+${su error message must upper or lower}    //div[@id='PopUpSignUp']/form/div[5]/div/div/p[2]
+${sign up now button}    xpath=(//button[@type='submit'])[3]
+${su error not a email}    css=div.field-input.has-error > div.form-group.has-error > p.help-block
+${su error email already in use}    //div[@id='PopUpSignUp']/form/div[4]/div/div/p[3]
+${su error username already in use or invalid}    //div[3]/div/div/p[3]
+${su error must 3 letters}    //div[@id='PopUpSignUp']/form/div[3]/div/div/p[2]

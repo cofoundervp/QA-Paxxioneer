@@ -1,0 +1,26 @@
+*** Variables ***
+${backgroud word dropdown}    id=primary_title_field
+${action word textbox}    name=actionWord
+${paxxioneer title text field}    xpath=(//input[@type='text'])[7]
+${video field 0}    id=video_field_0
+${video field 1}    id=video_field_1
+${video field 2}    id=video_field_2
+${video field 3}    id=video_field_3
+${video field 4}    id=video_field_4
+${video field 5}    id=video_field_5
+${video field 6}    id=video_field_6
+${more video button}    css=span.glyphicon.glyphicon-plus
+${add photo button}    css=div.selector > input[type="file"]
+${profile submit button}    //button[@class="btn btn-primary display-block ng-isolate-scope"]
+${background word on avatar}    css=em.ng-binding.ng-scope
+${tag 1}          //div[@id='view']/section/div/div[2]/div/form/div[4]/div/div/div/tags-input/div/div/ul/li[1]/ti-tag-item/ng-include/span
+${tag 2}          //div[@id='view']/section/div/div[2]/div/form/div[4]/div/div/div/tags-input/div/div/ul/li[2]/ti-tag-item/ng-include/span
+${tag 3}          //div[@id='view']/section/div/div[2]/div/form/div[4]/div/div/div/tags-input/div/div/ul/li[3]/ti-tag-item/ng-include/span
+${x1}             xpath=(//a[contains(text(),'×')])[1]
+${x2}             xpath=(//a[contains(text(),'×')])[2]
+${x3}             xpath=(//a[contains(text(),'×')])[3]
+${tag 4}          //div[@id='view']/section/div/div[2]/div/form/div[4]/div/div/div/tags-input/div/div/ul/li[4]/ti-tag-item/ng-include/span
+${x4}             xpath=(//a[contains(text(),'×')])[4]
+${tag 1 on avatar}    //div[@id='headingOne']/div[2]/ul/li/span[1]
+${tag 2 on avatar}    //div[@id='headingOne']/div[2]/ul/li/span[2]
+${tag 3 on avatar}    //div[@id='headingOne']/div[2]/ul/li/span[3]

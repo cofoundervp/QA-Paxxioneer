@@ -1,0 +1,129 @@
+*** Settings ***
+Test Teardown     Close Browser
+Resource          ../Variables/login_form.txt
+Resource          ../Interfaces/homepage.txt
+Resource          ../Interfaces/login_form.txt
+Resource          ../Action/general action.txt
+Resource          ../Action/global_variables.txt
+Resource          ../Action/verify_point.txt
+Resource          ../Interfaces/reset_password_form.txt
+Library           ExtendedSelenium2Library
+Library           OperatingSystem
+
+*** Test Cases ***
+TM002_TC001_verify login form show
+    open paxxioneer
+    open login form from homepage
+    verify login form is shown
+
+TM002_TC002_verify user can sign in with insider account
+    open paxxioneer
+    open login form from homepage
+    Wait Until Element Is Visible    ${username field}
+    Click Element    ${username field}
+    Input Text    ${username field}    ${insider_username}
+    Click Element    ${password field}
+    Input Password    ${password field}    ${insider_password}
+    Click Element    ${login now button}
+    verify user is signed in
+
+TM002_TC003_verify user can sign in with explorer
+    open paxxioneer
+    open login form from homepage
+    Wait Until Element Is Visible    ${username field}
+    Click Element    ${username field}
+    Input Text    ${username field}    ${customer_username}
+    Click Element    ${password field}
+    Input Password    ${password field}    ${customer_password}
+    Click Element    ${login now button}
+    verify user is signed in
+
+TM002_TC004_verify error message shows if user tries to login with blank username and password
+    open paxxioneer
+    open login form from homepage
+    Click Button    ${login now button}
+    verify error of username field in login form    ${username field blank error}
+    verify error of password field in login form    ${password field blank error}
+
+TM002_TC005_Verify error message shows if username or password field is blank
+    open paxxioneer
+    open login form from homepage
+    Wait Until Element Is Visible    ${password field}
+    Click Element    ${password field}
+    Input Text    ${password field}    ${customer_password}
+    Click Element    ${login now button}
+    verify error of username field in login form    ${username field blank error}
+    Click Element    ${password field}
+    Clear Element Text    ${password field}
+    Click Element    ${username field}
+    Input Text    ${username field}    ${customer_username}
+    Clear Element Text    ${password field}
+    Click Element    ${login now button}
+    verify error of password field in login form    ${password field blank error}
+
+TM002_TC006_Verify error message shows if user signs in with invalid credentials
+    open paxxioneer
+    open login form from homepage
+    login    cus-1-abc    qqqqqq
+    verify user cannot login with invalid credentials
+
+TM002_TC007_verify user can log out
+    open paxxioneer
+    open login form from homepage
+    login    cus-1    Abc123
+    log out
+    Element Should Be Visible    ${login button}
+
+TM002_TC008_verify user can open forgot password from
+    open paxxioneer
+    open login form from homepage
+    Click Element    ${forgot my password link}
+    ${temp}    Get Text    css=div.signup-term
+    Should Be Equal    ${temp}    Enter the e-mail with your Paxxioneer account, then click Continue. We'll send you a link to a page where you can easily create a new password.
+
+TM002_TC009_verify user cannot reset password with invalid info
+    open paxxioneer
+    open login form from homepage
+    Click Element    ${forgot my password link}
+    #    Empty
+    Click Element    ${continue button}
+    ${temp}    Get Text    ${email empty}
+    Should Be Equal    ${temp}    What's your email address?
+    #    not a email
+    Click Element    ${email field}
+    Input Text    ${email field}    cus-1
+    Click Element    ${continue button}
+    ${temp}    Get Text    ${invalid email}
+    Should Be Equal    ${temp}    Doesn't look like a valid email.
+    #    email is not registered
+    Click Element    ${email field}
+    Clear Element Text    ${email field}
+    Input Text    ${email field}    giang.test.test.not.register@mailinator.com
+    Click Element    ${continue button}
+    ${temp}    Get Text    ${email is not registered}
+    Should Be Equal    ${temp}    This email is not registered.
+
+TM002_TC010_verify user can request reset password
+    open paxxioneer
+    open login form from homepage
+    Click Element    ${forgot my password link}
+    Input Text    ${email field}    cus-2@mailinator.com
+    Click Element    ${continue button}
+    ${temp}    Get Text    ${email sent}
+    Should Be Equal    ${temp}    An email has been sent to your inbox. Click on the link to set a new password.
+
+TM002_TC011_verify user can switch to sign up form
+    open paxxioneer
+    open login form from homepage
+    Click Element    ${sign up link on sign in form}
+    Element Should Be Visible    ${sign up now button}
+
+TM002_TC012_verify user can sign out then sign in with another account
+    open paxxioneer
+    open login form from homepage
+    login    cus-1    Abc123
+    log out
+    Element Should Be Visible    ${login button}
+    open login form from homepage
+    login    default_customer_qa_auto    Abc123
+    Element Should Be Visible    ${message button}

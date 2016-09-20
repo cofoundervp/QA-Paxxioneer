@@ -1,0 +1,239 @@
+*** Settings ***
+Test Teardown     Close Browser
+Library           ExtendedSelenium2Library
+Resource          ../Action/general action.txt    #General Actions
+Resource          ../Action/global_variables.txt    # Global Variables
+Resource          ../Action/verify_point.txt    # Verify point action
+Resource          ../Interfaces/homepage.txt    # Homepage Interface
+Resource          ../Interfaces/signup_form.txt    # Sign Up form
+Library           String
+Library           DateTime
+Library           string
+Library           OperatingSystem
+
+*** Test Cases ***
+TM003_TC001_verify sign up form can be opened with has required items
+    [Documentation]    Verify points:
+    ...
+    ...    -- Username, email, password fields and sign up now button is presented
+    ...
+    ...    -- Verify if the instruction text for username field is shown and correct
+    ...
+    ...    -- Verify if the instruction text for password field is shown and correct
+    ...
+    ...    -- verify login link is shown
+    open paxxioneer
+    open sign up form from homepage
+    # check if username, email, password fields and sign up now button is presented
+    Is Element Visible    ${su username field}
+    Is Element Visible    ${su email field}
+    Is Element Visible    ${su password field}
+    Is Element Visible    ${sign up now button}
+    # verify the instruction text for username field
+    ${temp}    Get Text    ${su username instruction}
+    Should Be Equal    ${temp}    Username should only contain letters, numbers, underscores(_) or hyphens(-) and have at least 3 characters.
+    # verify the instruction text for password field
+    ${temp}    Get Text    ${su password instruction}
+    Should Be Equal    ${temp}    The password must contain at least one uppercase letter (A-Z), one lowercase letter (a-z), one number (0-9) and have at least 6 characters.
+    # verify login link is shown
+    Is Element Visible    ${login link on sign up form}
+
+TM003_TC002_verify proper error message shows if user tries to sign up with all empty value scenarios
+    [Documentation]    Verify points:
+    ...
+    ...    -- "A username is required" message shows if username field is empty
+    ...
+    ...    -- "Password must be at least 6 characters." error shows if password field is empty
+    ...
+    ...    -- "What's your email address?" error shows if email field is empty
+    open paxxioneer
+    open sign up form from homepage
+    #    ALL EMPTY
+    sign up    ${EMPTY}    ${EMPTY}    ${EMPTY}
+    #    verify for username
+    ${temp}    get text    ${su error username empty}
+    Should Be Equal    ${temp}    A username is required
+    #    verify for password
+    ${temp}    get text    ${su error password must 6 characters}
+    Should Be Equal    ${temp}    Password must be at least 6 characters.
+    #    verify for email
+    ${temp}    get text    ${su error email empty}
+    Should Be Equal    ${temp}    What's your email address?
+    #    PASSWORD EMPTY
+    sign up    cus-1    cus-1@mailinator    ${EMPTY}
+    #    verify for password
+    ${temp}    get text    ${su error password must 6 characters}
+    Should Be Equal    ${temp}    Password must be at least 6 characters.
+    #    EMAIL EMPTY
+    sign up    cus-1    ${EMPTY}    Abc123
+    #    verify for email
+    ${temp}    get text    ${su error email empty}
+    Should Be Equal    ${temp}    What's your email address?
+    #    USERNAME EMPTY
+    sign up    ${EMPTY}    cus-1@mailinator    Abc123
+    #    verify for username
+    ${temp}    get text    ${su error username empty}
+    Should Be Equal    ${temp}    A username is required
+    #    USERNAME AND EMAIL EMPTY
+    sign up    ${EMPTY}    ${EMPTY}    Abc123
+    #    verify for username
+    ${temp}    get text    ${su error username empty}
+    Should Be Equal    ${temp}    A username is required
+    #    verify for email
+    ${temp}    get text    ${su error email empty}
+    Should Be Equal    ${temp}    What's your email address?
+    #    USERNAME AND PASSWORD EMPTY
+    sign up    ${EMPTY}    cus-1@mailinator.com    ${EMPTY}
+    #    verify for username
+    ${temp}    get text    ${su error username empty}
+    Should Be Equal    ${temp}    A username is required
+    #    verify for password
+    ${temp}    get text    ${su error password must 6 characters}
+    Should Be Equal    ${temp}    Password must be at least 6 characters.
+    #    EMAIL AND PASSWORD EMPTY
+    sign up    cus-1    ${EMPTY}    ${EMPTY}
+    #    verify for password
+    ${temp}    get text    ${su error password must 6 characters}
+    Should Be Equal    ${temp}    Password must be at least 6 characters.
+    #    verify for email
+    ${temp}    get text    ${su error email empty}
+    Should Be Equal    ${temp}    What's your email address?
+
+TM003_TC003_verify proper error message shows for all invalid value scenarios
+    [Documentation]    Verify points:
+    ...
+    ...    PASSWORD INCORRECT:
+    ...
+    ...    + Password is less than 6 characters:
+    ...
+    ...    -- "Password must be at least 6 characters." error is shown
+    ...
+    ...    -- Error message above is not shown if password has from 6 characters
+    ...
+    ...    + Password must has Uppercase
+    ...
+    ...    -- Input abc123 and verify error "The password must contain at least one uppercase letter (A-Z)." is shown
+    ...
+    ...    + Password must has Lowercase:
+    ...
+    ...    -- Input ABC123 and verify error "The password must contain at least one lowercase letter (a-z)." is shown
+    ...
+    ...
+    ...    + Password must has number:
+    ...
+    ...    -- Input abcABC and verify "The password must contain at least one number (0-9)." is shown
+    ...
+    ...    EMAIL INCORRECT:
+    ...
+    ...    + Not a email:
+    ...
+    ...    -- Input cus-1 and verify "Doesn't look like a valid email." is shown
+    ...
+    ...    + Email in used:
+    ...
+    ...    -- Input cus-1@mailinator.com and verify "The specified email address is already in use." is shown
+    ...
+    ...    USERNAME \ INCORRECT:
+    ...
+    ...    + Invalid username:
+    ...
+    ...    -- Input cus-1$ and verify "Username should only contain letters, numbers, underscores(_) or hyphens(-)."
+    ...
+    ...    + Username in used:
+    ...
+    ...    -- Input cus-1 and verify "The specified username is already in use." is shown
+    ...
+    ...    + Username less than 3 characters:
+    ...
+    ...    -- Input username with 1 or 2 characters, verify "Username must be at least 3 characters." is shown
+    ...
+    ...    -- Input username that has 3 characters or more, verify error for username is not shown
+    open paxxioneer
+    open sign up form from homepage
+    #    PASSWORD incorrect scenarios
+    #    password is less than 6 characters
+    ${temp}    Set Variable    ${EMPTY}
+    ${test}    Set Variable    ${EMPTY}
+    Convert To String    ${test}
+    : FOR    ${index}    IN RANGE    1    6
+    \    ${test}    Generate Random String    ${index}
+    \    sign up    cus-1    cus-1@mailinator.com    ${test}
+    \    ${temp}    Get Text    ${su error password must 6 characters}
+    \    Should Be Equal    ${temp}    Password must be at least 6 characters.
+    ${test}    Generate Random String    7    [LETTERS]
+    sign up    cus-1    cus-1@mailinator.com    ${test}
+    Element Should Not Be Visible    ${su error password must 6 characters}
+    #    password must has capital
+    ${test}    set variable    abc123
+    sign up    cus-1    cus-1@mailinator.com    ${test}
+    ${temp}    Get Text    ${su error message must upper or lower}
+    Should Be Equal    ${temp}    The password must contain at least one uppercase letter (A-Z).
+    #    password must has lower
+    ${test}    set variable    ABC123
+    sign up    cus-1    cus-1@mailinator.com    ${test}
+    ${temp}    Get Text    ${su error message must upper or lower}
+    Should Be Equal    ${temp}    The password must contain at least one lowercase letter (a-z).
+    #    password must has number
+    ${test}    set variable    abcABC
+    sign up    cus-1    cus-1@mailinator.com    ${test}
+    ${temp}    Get Text    ${su error message must upper or lower}
+    Should Be Equal    ${temp}    The password must contain at least one number (0-9).
+    #    EMAIL \ incorrect scenarios
+    #    not a email
+    ${test}    set variable    cus-1
+    sign up    cus-1    ${test}    Abc123
+    ${temp}    Get Text    ${su error not a email}
+    Should Be Equal    ${temp}    Doesn't look like a valid email.
+    #    email in use
+    ${test}    set variable    cus-1@mailinator.com
+    sign up    cus-1    ${test}    Abc123
+    ${temp}    Get Text    ${su error email already in use}
+    Should Be Equal    ${temp}    The specified email address is already in use.
+    #    USERNAME \ incorrect scenarios
+    #    invalid username
+    ${test}    set variable    cus-1$
+    sign up    ${test}    cus-1@mailinator.com    Abc123
+    ${temp}    Get Text    ${su error username already in use or invalid}
+    Should Be Equal    ${temp}    Username should only contain letters, numbers, underscores(_) or hyphens(-).
+    #    username \ in use
+    ${test}    set variable    cus-1
+    sign up    ${test}    cus-1@mailinator.com    Abc123
+    ${temp}    Get Text    ${su error username already in use or invalid}
+    Should Be Equal    ${temp}    The specified username is already in use.
+    #    username \ less than 3
+    ${temp}    Set Variable    ${EMPTY}
+    ${test}    Set Variable    ${EMPTY}
+    Convert To String    ${test}
+    : FOR    ${index}    IN RANGE    1    2
+    \    ${test}    Generate Random String    ${index}
+    \    sign up    ${test}    cus-1@mailinator.com    Abc123
+    \    ${temp}    Get Text    ${su error must 3 letters}
+    \    Should Be Equal    ${temp}    Username must be at least 3 characters.
+    ${test}    Generate Random String    3    [LETTERS]
+    sign up    ${test}    cus-1@mailinator.com    Abc123
+    Element Should Not Be Visible    ${su error must 3 letters}
+
+TM003_TC004_verify user can create new account
+    open paxxioneer
+    open sign up form from homepage
+    #    Variables declaration
+    ${email domain}    Set Variable    @mailinator.com
+    ${tc_username}    Set Variable    ${EMPTY}
+    ${date}    Get Current Date    result_format=%Y-%m-%d
+    ${generate string}    Generate Random String    10
+    ${tc_username}    Catenate    SEPARATOR=-    ${date}    ${generate string}
+    ${tc_email}    Catenate    SEPARATOR=    ${tc_username}    ${email domain}
+    ${tc_password}    Set Variable    Abc123
+    #    Sign Up
+    sign up    ${tc_username}    ${tc_email}    ${tc_password}
+    #verify point: Message button is presented
+    ${checkpoint}    Is Element Visible    ${message button}
+    Run Keyword If    ${checkpoint} == True    Append To File    usernamedata.txt    ${tc_username} ${tc_email} /
+    ${customer global}    Set Variable    ${tc_username}
+    Set Global Variable    ${customer global}
+
+TM003_TC005_verify user can switch to login form
+    open paxxioneer
+    open sign up form from homepage
+    Click Element    ${login link on sign up form}
+    Element Should Be Visible    ${login now button}

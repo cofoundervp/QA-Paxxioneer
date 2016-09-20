@@ -1,0 +1,60 @@
+*** Settings ***
+Resource          general action.txt
+Resource          ../Interfaces/login_form.txt
+Resource          ../Interfaces/homepage.txt
+Library           ExtendedSelenium2Library
+
+*** Keywords ***
+verify login form is shown
+    Element Should Be Visible    ${login now button}
+
+verify user is signed in
+    Element Should Be Visible    ${user signed in menu}
+
+verify error of username field in login form
+    [Arguments]    ${expected error of username}
+    ${temp}    Get Text    ${login username error field}
+    Should Be Equal    ${temp}    ${expected error of username}
+
+verify error of password field in login form
+    [Arguments]    ${expected error of password}
+    ${temp}    Get Text    ${login password error field}
+    Should Be Equal    ${temp}    ${expected error of password}
+
+verify user cannot login with invalid credentials
+    ${temp}    Get Text    ${incorrect credentials error}
+    Should Be Equal    ${temp}    This Username/Email is not registered.
+
+verify page name
+    [Arguments]    ${expected header text}
+    ${temp}    Get Text    ${header of info page}
+    Should Be Equal    ${temp}    ${expected header text}
+
+verify background word update on avatar
+    [Arguments]    ${word}
+    ${temp}    Get Text    ${background word on avatar}
+    Should Be Equal    ${temp}    ${word}
+
+verify video thumbnail is shown on profile page
+    [Arguments]    ${video position}
+    ${position}    Set Variable    //div[@id='view']/section/div/div[2]/div/form/div[6]/div[position]/div[2]/div/video-thumb/div/div/div
+    ${position}    Replace String    ${position}    position    ${video position}
+    Element Should Be Visible    ${position}
+
+verify video thumbnail show on profile front-end
+    [Arguments]    ${video position}
+    ${position}    Set Variable    //div[@id='view']/div/section/div/div/div/video-posts/section/div[2]/div[position]/article/div/video-thumb/div/div/div
+    ${position}    Replace String    ${position}    position    ${video position}
+    Element Should Be Visible    ${position}
+
+verify new created activity on top and in profile page
+    [Arguments]    ${name to check}
+    ${temp}    Get Text    css=h4.entry-title.ng-binding
+    Should Be Equal    ${name to check}    ${temp}
+
+verify if city list empty
+    [Arguments]    ${country}
+    @{city list}    Get List Items    ${my account city field}
+    ${flag}    Get Length    ${city list}
+    Run Keyword If    ${flag} == 1    Append To File    countrywithnocity.txt    ${country}
+    Run Keyword If    ${flag} == 1    Fail    City list is empty

@@ -1,0 +1,307 @@
+*** Settings ***
+Resource          general action.txt
+Library           ExtendedSelenium2Library
+Library           DateTime
+Library           random
+Resource          ../Interfaces/front-ent_page.txt
+
+*** Keywords ***
+create experience
+    [Arguments]    ${experience name}    ${price}    ${type}    # Type = Session or Person
+    close dropdown menu in my experience page
+    ${flag}    Is Element Visible    ${new experience button}
+    Run Keyword If    ${flag} == True    scroll and click element    ${message button}    ${new experience button}
+    ...    ELSE    Log    FAIL    New Experience button is not founded
+    Input Text    ${experience name text field}    ${experience name}
+    Clear Element Text    ${experience cost field}
+    Input Text    ${experience cost field}    ${price}
+    Select From List By Value    ${experience cost type}    ${type}
+    select country city for new experience    VN    Ho Chi Minh
+    Comment    ${note text}    generate words    200
+    Comment    Input Text    ${my experience note}    ${note text}
+    Comment    ${policy text}    generate words    100
+    Comment    Input Text    ${my experience policty}    ${policy text}
+    Click Button    ${experience step 2 timeslot button}
+
+select country city for new experience
+    [Arguments]    ${country code}    ${city name}
+    Select From List By Value    ${experience country field}    ${country code}
+    Select From List    ${experience city field}    ${city name}
+
+generate experience name
+    ${name}    Generate Random String    15
+    [Return]    ${name}
+
+edit info of the newest experience
+    [Arguments]    ${experience name}    ${price}    ${type}
+    close dropdown menu in my experience page
+    Click Element    ${edit button of the newest experience}
+    Input Text    ${experience name text field}    ${experience name}
+    Clear Element Text    ${experience cost field}
+    Input Text    ${experience cost field}    ${price}
+    Select From List By Value    ${experience cost type}    ${type}
+    Click Button    ${my experience update button}
+    verify message popup    Experience updated.
+
+add today slot to the first experience
+    close dropdown menu in my experience page
+    Click Element    ${edit time button of the newest experience}
+    ${date}    Get Current Date
+    ${date}    Convert Date    ${date}    datetime
+    ${day}    Convert To String    ${date.day}
+    ${col}    Set Variable    ${EMPTY}
+    #get column
+    ${col}    get date column    ${day}
+    Set Global Variable    ${col}
+    Log    ${col}
+    # get row
+    ${row}    get date row    ${day}
+    Set Global Variable    ${row}
+    Log    ${row}
+    Log    Today date is at column ${col} row ${row}, add button for this cell is at row ${row+2}
+    click add timeslot in cell    ${col}    ${row}
+
+get date column
+    [Arguments]    ${day want to find}
+    ${col true}    Set Variable    0
+    ${count}    Set Variable    0
+    ${flag}    Set Variable    False
+    : FOR    ${col}    IN RANGE    1    8
+    \    ${flag}    Run Keyword And Return Status    Table Column Should Contain    ${my experience month table}    ${col}    ${day want to find}
+    \    ${col true}    Set Variable If    ${flag} == True    ${col}    ${col true}
+    \    ${count}    Set Variable If    ${flag} == True    ${count}+1    ${count}
+    \    ${COL TEMP}    Set Variable If    (${count} == 1) and (${flag} == True)    ${col}    ${COL TEMP}
+    \    ${flag}    Set Variable    False
+    ${col}    Set Variable    ${col true}
+    Set Global Variable    ${COL TEMP}
+    [Return]    ${col}
+
+get date row
+    [Arguments]    ${day want to find}
+    ${row true}    Set Variable    0
+    ${count}    Set Variable    0
+    ${flag}    Set Variable    False
+    : FOR    ${row}    IN RANGE    1    20
+    \    ${flag}    Run Keyword And Return Status    Table Row Should Contain    ${my experience month table}    ${row}    ${day want to find}
+    \    ${row true}    Set Variable If    ${flag} == True    ${row}    ${row true}
+    \    ${count}    Set Variable If    ${flag} == True    ${count}+1    ${count}
+    \    ${ROW TEMP}    Set Variable If    (${count} == 1) and (${flag} == True)    ${row}    ${ROW TEMP}
+    \    ${flag}    Set Variable    False
+    ${row}    Set Variable    ${row true}
+    Set Global Variable    ${ROW TEMP}
+    [Return]    ${row}
+
+click add timeslot in cell
+    [Arguments]    ${col}    ${row}
+    ${flag}    Set Variable    ${row}
+    ${row}    Set Variable    ${row+2}
+    ${pilot row}    Set Variable    ${row-5}
+    ${row}    Convert To String    ${row}
+    ${col}    Convert To String    ${col}
+    ${add button real position}    Replace String    ${timetable add button in slot position}    row    ${row}
+    ${add button real position}    Replace String    ${add button real position}    column    ${col}
+    Run Keyword If    '${flag}' != '1'    scroll and click element    //div[@id='view']/section/div/div[2]/div/div/div/div/div[2]/form/article/div/div/div/div/table/tbody/tr[${pilot row}]/td[${col}]/span    ${add button real position}
+    Run Keyword If    '${flag}' == '1'    Click Element    ${add button real position}
+
+edit start time
+    [Arguments]    ${column}    ${row}    ${slot}    ${hour}    ${minute}
+    ${flag}    Set Variable    ${row}
+    ${pilot row}    Set Variable    ${row-3}
+    ${row}    Set Variable    ${row+1}
+    ${row}    Convert To String    ${row}
+    ${column}    Convert To String    ${column}
+    ${slot}    Convert To String    ${slot}
+    ${real slot position}    Replace String    ${timeslot start time postion}    row    ${row}
+    ${real slot position}    Replace String    ${real slot position}    column    ${column}
+    ${real slot position}    Replace String    ${real slot position}    time    ${slot}
+    Run Keyword If    '${flag}' != '1'    scroll and click element    //div[@id='view']/section/div/div[2]/div/div/div/div/div[2]/form/article/div/div/div/div/table/tbody/tr[${pilot row}]/td[${column}]/span    ${real slot position}
+    Run Keyword If    '${flag}' == '1'    Click Element    ${real slot position}
+    Clear Element Text    ${real slot position}
+    Input Text    ${real slot position}    ${hour}:${minute}
+
+edit end time
+    [Arguments]    ${column}    ${row}    ${slot}    ${hour}    ${minute}
+    ${flag}    Set Variable    ${row}
+    ${pilot row}    Set Variable    ${row-3}
+    ${row}    Set Variable    ${row+1}
+    ${row}    Convert To String    ${row}
+    ${column}    Convert To String    ${column}
+    ${slot}    Convert To String    ${slot}
+    ${real slot position}    Replace String    ${timeslot end time}    row    ${row}
+    ${real slot position}    Replace String    ${real slot position}    column    ${column}
+    ${real slot position}    Replace String    ${real slot position}    time    ${slot}
+    Run Keyword If    '${flag}' != '1'    scroll and click element    //div[@id='view']/section/div/div[2]/div/div/div/div/div[2]/form/article/div/div/div/div/table/tbody/tr[${pilot row}]/td[${column}]/span    ${real slot position}
+    Run Keyword If    '${flag}' == '1'    Click Element    ${real slot position}
+    Clear Element Text    ${real slot position}
+    ${end minute}    Set Variable If    '${minute}' == '0'    15    '${minute}' == '15'    30    '${minute}' == '30'
+    ...    45    '${minute}' == '45'    0
+    ${hour}    Set Variable If    ${end minute} == 0    ${hour+1}    ${hour}
+    Input Text    ${real slot position}    ${hour}:${end minute}
+
+get today column
+    ${date}    Get Current Date
+    ${date}    Convert Date    ${date}    datetime
+    ${day}    Convert To String    ${date.day}
+    ${col}    Set Variable    ${EMPTY}
+    #get column
+    ${col}    get date column    ${day}
+    [Return]    ${col}
+
+open timetable of the first experience
+    Click Element    ${edit time button of the newest experience}
+
+get today row
+    ${date}    Get Current Date
+    ${date}    Convert Date    ${date}    datetime
+    ${day}    Convert To String    ${date.day}
+    ${col}    Set Variable    ${EMPTY}
+    # get row
+    ${row}    get date row    ${day}
+    [Return]    ${row}
+
+add hour
+    [Arguments]    ${col}    ${row}
+    ${current_hour}    get current hour
+    ${current_minute}    get current minute
+    Log    It's about ${current hour}:${current minute} o'clock
+    ${rounded_minute}    define minute    ${current_minute}
+    Log    ${rounded_minute}
+    Convert To Number    ${current_hour}
+    Convert To Number    ${current_minute}
+    Convert To Number    ${rounded_minute}
+    ${current_hour}    Set Variable If    ${rounded_minute} == 0    ${current_hour+ 1}    ${current_hour}
+    ${current_hour}    Set Variable If    ${rounded_minute} == 15    ${current_hour+ 1}    ${current_hour}
+    click add timeslot in cell    ${col}    ${row}
+    edit start time    ${col}    ${row}    1    ${current_hour}    ${rounded_minute}
+    edit end time    ${col}    ${row}    1    ${current_hour}    ${rounded_minute}
+    ${global rounded_minute}    Set Variable    ${rounded_minute}
+    Set Global Variable    ${global rounded_minute}
+
+get current hour
+    ${hour}    Get Current Date
+    ${hour}    Convert Date    ${hour}    datetime
+    ${hour}    Convert To Number    ${hour.hour}
+    [Return]    ${hour}
+
+get current minute
+    ${minute}    Get Current Date
+    ${minute}    Convert Date    ${minute}    datetime
+    ${minute}    Convert To Number    ${minute.minute}
+    [Return]    ${minute}
+
+define minute
+    [Arguments]    ${minute}
+    ${defined minute}    Set Variable If    ${minute} < 15    30    ${minute} < 30    45    ${minute} < 45
+    ...    0    15
+    [Return]    ${defined minute}
+
+get today day
+    ${date}    Get Current Date
+    ${date}    Convert Date    ${date}    datetime
+    ${day}    Set Variable    ${date.day}
+    [Return]    ${day}
+
+click today on booking calendar
+    [Arguments]    ${day}
+    ${xflag}    Set Variable    False
+    : FOR    ${i}    IN RANGE    7    48
+    \    ${temp}    Get Text    xpath=(//button[@type='button'])[${i}]
+    \    Convert To Number    ${temp}
+    \    Log    ${temp}
+    \    Run Keyword If    '${temp}' == '${day}'    Click Element    xpath=(//button[@type='button'])[${i}]
+    \    Run Keyword If    '${temp}' == '0${day}'    Click Element    xpath=(//button[@type='button'])[${i}]
+    \    ${xflag}    Is Element Visible    ${book button on front end}
+    \    Run Keyword If    ${xflag} == True    Exit For Loop
+
+fill credit card
+    Select Frame    id=braintree-dropin-frame
+    ${check}    Set Variable    False
+    ${check}    Is Element Visible    ${payment credit card number}
+    Run Keyword If    ${check} == True    input text to credit card field
+    Unselect Frame
+
+check valid
+    [Arguments]    ${col}    ${row}
+    ${test}    Is Element Visible    //div[@id='view']/section/div/div[2]/div/div/div[2]/form/article/div/div/div/div/table/tbody/tr[${row}]/td[${col}]/div/span
+    Run Keyword If    ${test} == None    correct column and row    ${col}    ${row}
+    [Return]    ${col}    ${row}
+
+correct column and row
+    [Arguments]    ${col}    ${row}
+    ${col}    Set Variable    ${COL TEMP}
+    Set Global Variable    ${col}
+    ${row}    Set Variable    ${ROW TEMP}
+    Set Global Variable    ${row}
+    [Return]    ${col}    ${row}
+
+generate words
+    [Arguments]    ${number of word}
+    ${text}    Set Variable    ${EMPTY}
+    : FOR    ${i}    IN RANGE    0    ${number of word}
+    \    ${word}    Generate Random String    5
+    \    ${text}    Catenate    ${text}    ${word}
+    [Return]    ${text}
+
+random number
+    ${number}    Generate Random String    2    [NUMBERS]
+    ${number}    Convert To Integer    ${number}
+    [Return]    ${number}
+
+add participant
+    [Arguments]    ${col}    ${row}    ${position}    ${number}
+    ${pilot row}    Set Variable    ${row-3}
+    ${row}    Set Variable    ${row+1}
+    : FOR    ${i}    IN RANGE    0    ${number}
+    \    scroll and click element    //div[@id='view']/section/div/div[2]/div/div/div/div/div[2]/form/article/div/div/div/div/table/tbody/tr[${pilot row}]/td[${col}]/span    //div[@id='view']/section/div/div[2]/div/div/div/div/div[2]/form/article/div/div/div/div/table/tbody/tr[${row}]/td[${col}]/div/div[${position}]/div[2]/div/span[3]
+
+select number of participant
+    [Arguments]    ${pax}
+    Click Element    ${number of people}
+    Click Element    //option[@value='${pax}']
+    Click Element    css=div.col-sm-6
+
+verify text and total price
+    [Arguments]    ${maximum participant}    ${price}    ${activity type}    # activity type = person | session | hour
+    ${total}    Set Variable    1
+    : FOR    ${i}    IN RANGE    0    ${maximum participant}
+    \    ${i}    Evaluate    ${i}+1
+    \    select number of participant    ${i}
+    \    Run Keyword If    '${activity type}' == 'person'    verify for person activity    ${price}    ${i}
+    \    Run Keyword If    '${activity type}' == 'session'    verify for session activity    ${price}    ${i}
+    \    Run Keyword If    '${activity type}' == 'hour'    verify for hour activity    ${price}    ${i}
+    \    ${i}    Evaluate    ${i}-1
+
+verify for person activity
+    [Arguments]    ${price}    ${i}
+    ${ac text}    Get Text    ${price calculate and text}
+    Should Be Equal    ${ac text}    HKD${price} per person x ${i}
+    ${total price}    Get Text    ${total price text}
+    ${total}    Evaluate    ${price}*${i}
+    Should Be Equal    ${total price}    HKD${total}
+
+verify for session activity
+    [Arguments]    ${price}    ${i}
+    ${ac text}    Get Text    ${price calculate and text}
+    Should Be Equal    ${ac text}    HKD${price} per session x 1
+    ${total price}    Get Text    ${total price text}
+    Should Be Equal    ${total price}    HKD${price}
+
+verify for hour activity
+    [Arguments]    ${price}    ${i}
+    ${ac text}    Get Text    ${price calculate and text}
+    Should Be Equal    ${ac text}    HKD${price} per hour x 0.25
+    ${total price}    Get Text    ${total price text}
+    ${price}    rounded price    ${price}    0.25
+    Should Be Equal    ${total price}    HKD${price}
+
+rounded price
+    [Arguments]    ${price}    ${time}
+    ${price}    Evaluate    ${price}*${time}
+    ${price}    Convert To Number    ${price}    0
+    ${price}    Convert To Integer    ${price}
+    [Return]    ${price}
+
+input text to credit card field
+    Input Text    ${payment credit card number}    4242424242424242
+    Input Text    ${payment expired date}    02/22
+    Input Text    ${payment cvv field}    222

@@ -1,0 +1,38 @@
+*** Variables ***
+${login button}    xpath=(//a[contains(text(),'Log In')])[2]
+${user signed in menu}    css=span.username.ng-binding
+${sign up button}    xpath=(//a[contains(text(),'Sign Up')])[3]
+${message button}    link=Messages
+${meet paxxioneer link}    link=Meet paxxioneers
+${how it work link}    link=exact:How it works?
+${animated icon}    //section[@class="regular expand ng-scope"]/div/div/div/div/a/img
+${meet passionate people icon}    //section[3]/div/div/div/div/a/img
+${meet passionate people link}    link=Meet passionate people
+${make your journey icon}    //div[2]/div/a/img
+${make your journey link}    link=Make your journey meaningful
+${share your passion icon}    //div[3]/div/a/img
+${share your passion link}    link=Share your passions
+${header of info page}    css=h1.page-title
+${functional page dropdown menu}    css=span.username.ng-binding
+${dropdown your booking link}    link=Your Booking
+${dropdown my account link}    link=My Account
+${dropdown logout}    link=Logout
+${dropdown my experience}    link=My Experience
+${dropdown my profile}    link=My Profile
+${dropdown my blog}    link=My Blog
+${footer our brand link}    link=Our Brand
+${footer who are paxxioneers link}    //a[contains(text(),'Who are paxxioneers?')]
+${footer meet a paxxioneer link}    link=Meet a paxxioneer
+${footer become a paxxioneer link}    link=Become a paxxioneer!
+${footer why are we here}    //a[contains(text(),'Why are we here?')]
+${footer meet passionate people}    //a[contains(text(),'Meet passionate people')]
+${footer make your journey}    //a[contains(text(),'Make your journey meaningful')]
+${footer share your passion link}    xpath=(//a[contains(text(),'Share your passions')])[2]
+${footer blog link}    link=Blog
+${footer contact us link}    link=Contact Us
+${banner share your passion}    //div[@id='view']/section/div/div/div[2]/div/div[1]/div[2]/div/h1
+${banner meet passionate peopel}    //div[@id='view']/section/div/div/div[2]/div/div[3]/div[2]/div/h1
+${banner make your yourney}    //div[@id='view']/section/div/div/div[2]/div/div[2]/div[2]/div/h1
+${banner navigation right arrow}    css=div.slick-next.slick-arrow
+${banner navigation left arrow}    css=i.fa.fa-angle-left
+${banner learn more button}    xpath=(//a[contains(text(),'Learn more')])[2]

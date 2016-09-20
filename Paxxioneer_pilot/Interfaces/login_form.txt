@@ -1,0 +1,9 @@
+*** Variables ***
+${login now button}    //button[@type='submit' and contains(text(), 'LOGIN NOW')]    # login now button in login form
+${username field}    name=account
+${password field}    id=login-password
+${sign up link on sign in form}    xpath=(//a[contains(text(),'Sign Up')])[2]
+${forgot my password link}    xpath=(//a[contains(text(),'Forgot my Password')])[1]
+${login username error field}    //div[@id='PopUpLogin']/form/div[3]/div/div/p
+${login password error field}    //div[@id='PopUpLogin']/form/div[4]/div/div/p
+${incorrect credentials error}    css=form[name="form"] > div.form-group.has-error > p.help-block.ng-binding

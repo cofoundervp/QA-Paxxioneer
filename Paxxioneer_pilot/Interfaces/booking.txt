@@ -1,0 +1,18 @@
+*** Variables ***
+${payment first name field}    id=firstname_field
+${payment last name field}    id=lastname_field
+${payment email field}    id=email_field
+${payment country field}    id=country_field
+${payment city field}    id=city_field
+${payment credit card number}    id=credit-card-number
+${payment expired date}    id=expiration
+${payment cvv field}    id=cvv
+${payment introduce yourself field}    id=comment_field
+${payment request booking button}    //button[@class="btn btn-primary display-block ng-isolate-scope"]
+${payment exeperience name}    css=div.textwidget > h4.ng-binding
+${payment location}    //aside[@id='text-2']/div/p
+${payment booking datetime}    css=strong.ng-binding
+${payment single price}    css=div.col-sm-6.ng-binding
+${payment final price}    //aside[@id='text-2']/div/div[4]/div[2]/span
+${payment number of customer}    //aside[@id='text-2']/div/div[4]/div[4]/span
+${payment total price}    css=div.row.final-amount > div.col-sm-6.text-right > span.amount.ng-binding

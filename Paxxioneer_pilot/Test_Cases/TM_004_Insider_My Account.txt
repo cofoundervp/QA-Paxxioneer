@@ -1,0 +1,1552 @@
+*** Settings ***
+Suite Teardown    Close Browser
+Test Teardown     Close Browser
+Library           ExtendedSelenium2Library
+Resource          ../Variables/login_form.txt
+Resource          ../Interfaces/homepage.txt
+Resource          ../Interfaces/login_form.txt
+Resource          ../Action/general action.txt
+Resource          ../Action/global_variables.txt
+Resource          ../Action/verify_point.txt
+Resource          ../Interfaces/info_page.txt
+Resource          ../Interfaces/functional_page.txt
+Resource          ../Variables/page_title.txt
+Resource          ../Interfaces/admin_page.txt
+Library           DateTime
+Library           string
+Library           String
+Resource          ../Action/global_variables.txt
+Library           Collections
+Resource          ../Interfaces/front-ent_page.txt
+Library           AutoItLibrary
+
+*** Test Cases ***
+test
+    [Tags]    test
+    open paxxioneer
+    open login form from homepage
+    login    admin    admin12A
+    Click Element    ${featured paxxioneer link}
+    add paxxioneer to featured table    cvp_insider_7
+    ${expected}    Set Variable    cvp_insider_7
+    ${position}    get position of paxxioneer in featured table    ${expected}
+    up the paxxioneer to first place    ${position}
+    remove paxxioneer from featured table    ${expected}
+
+TM004_TC001_verify user can create paxxioneer account
+    open paxxioneer
+    open login form from homepage
+    login    admin    admin12A
+    ${PAX USERNAME}    generate paxxioneer username
+    ${PAX EMAIL}    generate paxxioneer email
+    create paxxioneer    ${PAX USERNAME}    ${PAX EMAIL}    Abc123
+    Table Column Should Contain    ${admin table}    1    ${PAX USERNAME}
+    ${PAX USERNAME}    String.Convert To Lowercase    ${PAX USERNAME}
+    Set Global Variable    ${PAX USERNAME}
+    # turn off coming soon
+    Click Element    ${featured paxxioneer link}
+    turn on or off coming soon    ${PAX USERNAME}
+
+teest 2
+    [Tags]    test
+    open paxxioneer
+    open login form from homepage
+    login    admin    admin12A
+    Click Element    ${featured paxxioneer link}    //div[@id='view']/section/div/div[2]/div/table/tbody/tr[2]/td[4]
+
+TM004_TC002_Verify if Paxxioneer has video, his/her avatar will have Watch Video button
+    [Tags]    test
+    open paxxioneer
+    open login form from homepage
+    login    admin    admin12A
+    Click Element    ${featured paxxioneer link}
+    add paxxioneer to featured table    ${PAX USERNAME}
+    Sleep    3s
+    ${current position}    get position of paxxioneer in featured table    ${PAX USERNAME}
+    up the paxxioneer to first place    ${current position}
+    log out
+    open login form from homepage
+    login    ${PAX USERNAME}    Abc123
+    Element Should Not Be Visible    //div[@id='view']/featured-insider/section/div/div[2]/div[2]/article/footer/a
+    Click Element    ${meet paxxioneer link}
+    Element Should Not Be Visible    //div[@id='view']/featured-insider/section/div/div[2]/div[2]/article/footer/a
+    click function page from dropdown    ${dropdown my profile}
+    scroll and click element    ${paxxioneer title text field}    ${video field 0}
+    Input Text    ${video field 0}    ${video url 1}
+    Click Button    ${profile submit button}
+    Click Link    ${meet paxxioneer link}
+    Element Should Be Visible    //div[@id='view']/featured-insider/section/div/div[2]/div[2]/article/footer/a
+    click function page from dropdown    ${dropdown my profile}
+    Clear Element Text    ${video field 0}
+    sleep    5s
+    Click Button    ${profile submit button}
+    log out
+    open login form from homepage
+    login    admin    admin12A
+    Click Element    ${featured paxxioneer link}
+    remove paxxioneer from featured table    ${PAX USERNAME}
+
+TM004_TC003_verify banner correct banner is shown for each scenario
+    [Tags]    test
+    open paxxioneer
+    open login form from homepage
+    login    ${PAX USERNAME}    Abc123
+    open paxxioneer profile    ${PAX USERNAME}
+    sleep    5s
+    # verify default banner is shown
+    Element Should Be Visible    ${default banner}
+    # verify video banner is shown
+    open paxxioneer profile    gianghoang2
+    sleep    5s
+    Element Should Be Visible    ${banner with video}
+    # verify video banner is for 1 image
+    open paxxioneer profile    paxwith1image
+    sleep    5s
+    Element Should Be Visible    ${banner with image}
+    Element Should Not Be Visible    ${banner navigation right arrow}
+    Element Should Not Be Visible    ${banner navigation left arrow}
+    # verify video banner is for 2 or more images
+    open paxxioneer profile    paxwith2images
+    sleep    5s
+    Element Should Be Visible    ${banner with image}
+    Element Should Be Visible    ${banner navigation right arrow}
+    Element Should Be Visible    ${banner navigation left arrow}
+
+TM004_TC004_verify user can open My Account page
+    open paxxioneer
+    open login form from homepage
+    login    ${PAX USERNAME}    Abc123
+    click function page from dropdown    ${dropdown my account link}
+    Title Should Be    Account - Paxxioneer
+
+TM004_TC005_verify user cannot update my account page without country/city info
+    open paxxioneer
+    open login form from homepage
+    login    ${PAX USERNAME}    Abc123
+    click function page from dropdown    ${dropdown my account link}
+    # Input first name and last name
+    ${first name}    Generate Random String    5
+    ${last name}    Generate Random String    5
+    Input Text    ${my account first name field}    ${first name}
+    Input Text    ${my account last name field}    ${last name}
+    # Click Update button
+    Click Button    ${my account update button}
+    # Verify text on error popup is correct
+    ${message}    Get Text    css=div.message.ng-binding
+    Should Be Equal    ${message}    Profile validation failed
+    # Verify error on country / city field
+    ${error}    Get Text    ${my account error of country field}
+    Should Be Equal    ${error}    Country cannot be blank.
+    ${error}    Get Text    ${my account error city}
+    Should Be Equal    ${error}    City cannot be blank.
+
+TM004_TC006_verify user can select all country/city and update my account page
+    [Tags]    test
+    [Setup]    go to my account page
+    [Template]    select country city
+    AF    Kabul
+    AF    Kandahar
+    AF    Mazari Sharif
+    AL    Durres
+    AL    Tirana
+    DZ    Algiers
+    AD    Andorra la Vella
+    AO    Luanda
+    AG    St. John's
+    AR    Bahia Blanca
+    AR    Buenos Aires
+    AR    Catamarca
+    AR    Cordoba
+    AR    Corrientes
+    AR    Jujuy
+    AR    La Rioja
+    AR    Mendoza
+    AR    Neuquen
+    AR    Posadas
+    AR    Rawson
+    AR    Rio Cuarto
+    AR    Rio Gallegos
+    AR    Rosario
+    AR    Salta
+    AR    San Juan
+    AR    San Lorenzo
+    AR    San Luis
+    AR    Santa Fe
+    AR    Santa Rosa
+    AR    Tucuman
+    AR    Ushuaia
+    AR    Viedma
+    AM    Gyumri
+    AM    Yerevan
+    AW    Oranjestad
+    AU    Adelaide
+    AU    Albury
+    AU    Alice Springs
+    AU    Brisbane
+    AU    Cairns
+    AU    Canberra
+    AU    Dampier
+    AU    Darwin
+    AU    Gatton
+    AU    Gladstone
+    AU    Gosford
+    AU    Grafton
+    AU    Hobart
+    AU    Kingston, Norfolk Island
+    AU    Launceston
+    AU    Lismore
+    AU    Mackay
+    AU    Mandurah
+    AU    Melbourne
+    AU    Newcastle
+    AU    North Ryde
+    AU    Orange
+    AU    Perth
+    AU    Port Arthur
+    AU    Port Hedland
+    AU    Sydney
+    AU    Toowoomba
+    AU    Townsville
+    AU    Warrnambool
+    AU    Wodonga
+    AU    Wollongong
+    AT    Gratkorn
+    AT    Graz
+    AT    Salzburg
+    AT    Vienna
+    AZ    Baku
+    BS    Nassau
+    BH    Manama
+    BD    Bandarban
+    BD    Chittagong
+    BD    Cox's Bazar
+    BD    Dhaka
+    BD    Sylhet
+    BD    Tangail
+    BB    Bridgetown
+    BY    Minsk
+    BE    Antwerp
+    BE    Brussels
+    BE    Etterbeek
+    BE    Gent
+    BE    Halle
+    BZ    Belize City
+    BZ    Belmopan
+    BJ    Cotonou
+    BJ    Porto Novo
+    BM    Hamilton
+    BT    Thimphu
+    BO    La Paz
+    BA    Banja Luka
+    BA    Sarajevo
+    BA    Tuzla
+    BW    Gaborone
+    BR    Arraial do Cabo
+    BR    Belo Horizonte
+    BR    Brasilia
+    BR    Campinas
+    BR    Cuiaba
+    BR    Curitiba
+    BR    Eirunepe
+    BR    Fortaleza
+    BR    Joao Pessoa
+    BR    Macapa
+    BR    Manaus
+    BR    Olinda
+    BR    Palmas
+    BR    Petropolis
+    BR    Porto Alegre
+    BR    Recife
+    BR    Rio Branco
+    BR    Rio de Janeiro
+    BR    Salvador
+    BR    Santarem
+    BR    Sao Jose do Rio Preto
+    BR    Sao Paulo
+    BN    Bandar Seri Begawan
+    BG    Albena
+    BG    Belogradchik
+    BG    Sliven
+    BG    Sofia
+    BG    Varna
+    BG    Vidin
+    BF    Ouagadougou
+    BF    Kyaikto
+    BF    Mandalay
+    BF    Rangoon
+    BF    Thaton
+    BF    Yawnghwe
+    BI    Bujumbura
+    KH    Phnom Penh
+    KH    Siem Reap
+    CM    Douala
+    CM    Yaounde
+    CA    Abbotsford, BC
+    CA    Aklavik, NT
+    CA    Alert, NU
+    CA    Amherst, NS
+    CA    Armstrong, BC
+    CA    Banff, AB
+    CA    Barrie, ON
+    CA    Burnaby, BC
+    CA    Calgary, AB
+    CA    Canmore, AB
+    CA    Charlottetown, PE
+    CA    Chilliwack, BC
+    CA    Cranbrook, BC
+    CA    Edmonton, AB
+    CA    Golden, BC
+    CA    Guelph, ON
+    CA    Halifax, NS
+    CA    Hamilton, ON
+    CA    Hope, BC
+    CA    Huntingdon, QC
+    CA    Inuvik, NT
+    CA    Iqaluit, NU
+    CA    Jasper, AB
+    CA    Kamloops, BC
+    CA    Kelowna, BC
+    CA    Kingston, ON
+    CA    Kitchener, ON
+    CA    London, ON
+    CA    Mission, BC
+    CA    Mississauga, ON
+    CA    Moncton, NB
+    CA    Montreal, QC
+    CA    Nanaimo, BC
+    CA    New Westminster, BC
+    CA    Niagara Falls, ON
+    CA    North Bay, ON
+    CA    Oshawa, ON
+    CA    Ottawa, ON
+    CA    Pickering, ON
+    CA    Prince George, BC
+    CA    Quebec City, QC
+    CA    Red Deer, AB
+    CA    Regina, SK
+    CA    Revelstoke, BC
+    CA    Saint John, NB
+    CA    Saskatoon, SK
+    CA    St. Catharines, ON
+    CA    St. John's, NL
+    CA    Sydney, NS
+    CA    Toronto, ON
+    CA    Vancouver, BC
+    CA    Victoria, BC
+    CA    Waterloo, ON
+    CA    Whistler, BC
+    CA    White Rock, BC
+    CA    Whitehorse, YT
+    CA    Windsor, ON
+    CA    Winnipeg, MB
+    CA    Yellowknife, NT
+    CV    Praia
+    KY    George Town
+    CF    Bangui
+    TD    N'Djamena
+    CL    Arica
+    CL    Santiago
+    CL    Valdivia
+    CL    Valparaiso
+    CL    Vina del Mar
+    CN    Anshan
+    CN    Baotou
+    CN    Beijing
+    CN    Benxi
+    CN    Changchun
+    CN    Chengdu
+    CN    Chongqing
+    CN    Dalian
+    CN    Dandong
+    CN    Foshan
+    CN    Fuzhou
+    CN    Guangzhou
+    CN    Hangzhou
+    CN    Hanjiang
+    CN    Harbin
+    CN    Hohhot
+    CN    Hong Kong
+    CN    Huizhou
+    CN    Jilin
+    CN    Jinan
+    CN    Jinzhou
+    CN    Kowloon
+    CN    Kunming
+    CN    Lanzhou
+    CN    Luancheng
+    CN    Macau
+    CN    Nanjing
+    CN    Ningbo
+    CN    Qingdao
+    CN    Sanxiang
+    CN    Shanghai
+    CN    Shekou
+    CN    Shenyang
+    CN    Shenzhen
+    CN    Shijiazhuang
+    CN    Simatai
+    CN    Suifenhe
+    CN    Suzhou
+    CN    Taian
+    CN    Taiyuan
+    CN    Tanggu
+    CN    Tangshan
+    CN    Tianjin
+    CN    Urumqi
+    CN    Wuhan
+    CN    Xiamen
+    CN    Xian
+    CN    Yantai
+    CN    Zhengzhou
+    CN    Zhongshan
+    CO    Bogota
+    CO    Medellin
+    KM    Moroni
+    CG    Brazzaville
+    CD    Kinshasa
+    CK    Avarua
+    CR    Alajuela
+    CR    Heredia
+    CR    San Isidro
+    CR    San Jose
+    CI    Abidjan
+    CI    Grand-Bassam
+    CI    Yamoussoukro
+    HR    Zagreb
+    HR    Zupanja
+    CU    Cienfuegos
+    CU    Havana
+    CU    Manzanillo
+    CU    Santa Clara
+    CU    Santiago de Cuba
+    CW    Willemstad
+    CY    Limassol
+    CY    Nicosia
+    CZ    Brno
+    CZ    Karlovy Vary
+    CZ    Prague
+    DK    Aalborg
+    DK    Aarhus
+    DK    Copenhagen
+    DK    Helsingor
+    DK    Horsens
+    DK    Odense
+    DK    Rodby
+    DJ    Djibouti
+    DM    Roseau
+    DO    Puerto Plata
+    DO    Santiago de los Caballeros
+    DO    Santo Domingo
+    TL    Dili
+    EC    Ambato
+    EC    Cuenca
+    EC    Guayaquil
+    EC    Puerto Ayora
+    EC    Puerto Baquerizo Moreno
+    EC    Quito
+    EG    Alexandria
+    EG    Cairo
+    EG    Luxor
+    EG    Sharm El Sheikh
+    SV    La Libertad
+    SV    La Union
+    SV    San Salvador
+    SV    Santa Ana
+    GQ    Malabo
+    ER    Asmara
+    EE    Tallinn
+    ET    Addis Ababa
+    FK    Stanley
+    FO    Torshavn
+    FJ    Suva
+    FI    Helsinki
+    FI    Ivalo
+    FI    Kotka
+    FI    Oulu
+    FI    Rovaniemi
+    FI    Turku
+    FI    Vaasa
+    FR    Amiens
+    FR    Beziers
+    FR    Bordeaux
+    FR    Brest
+    FR    Cannes
+    FR    Carcassonne
+    FR    Collioure
+    FR    Dieppe
+    FR    Dunkerque
+    FR    Fontainebleau
+    FR    Grasse
+    FR    Grenoble
+    FR    Le Havre
+    FR    Lille
+    FR    Limoux
+    FR    Lyon
+    FR    Marseille
+    FR    Montpellier
+    FR    Montpeyroux
+    FR    Nantes
+    FR    Nice
+    FR    Nimes
+    FR    Paris
+    FR    Reims
+    FR    Rennes
+    FR    Sete
+    FR    Strasbourg
+    FR    Toulon
+    FR    Toulouse
+    FR    Tours
+    FR    Vallauris
+    GF    Cayenne
+    PF    Papeete
+    PF    Taiohae
+    GA    Libreville
+    GM    Banjul
+    GE    Tbilisi
+    DE    Baden-Baden
+    DE    Berlin
+    DE    Bonn
+    DE    Bremen
+    DE    Cologne
+    DE    Donauworth
+    DE    Dresden
+    DE    Duesseldorf
+    DE    Essen
+    DE    Frankfurt
+    DE    Hamburg
+    DE    Hannover
+    DE    Kiel
+    DE    Leipzig
+    DE    Magdeburg
+    DE    Mainz
+    DE    Mannheim
+    DE    Munich
+    DE    Nurnberg
+    DE    Puttgarden
+    DE    Ramstein
+    DE    Rostock
+    DE    Schluechtern
+    DE    Stuttgart
+    DE    Trier
+    GH    Accra
+    GI    Gibraltar
+    GR    Athens
+    GR    Chania
+    GR    Corfu
+    GR    Hora Sfakion
+    GR    Igoumenitsa
+    GR    Iraklion
+    GR    Kos
+    GR    Patras
+    GR    Rhodes
+    GR    Thessaloniki
+    GR    Zakynthos
+    GR    Crete
+    GL    Kulusuk
+    GL    Nuuk
+    GD    Saint George's
+    GP    Basse-Terre
+    GU    Hagatna
+    GU    Tamuning
+    GU    Yigo
+    GT    Antigua
+    GT    Guatemala City
+    GT    Quezaltenango
+    GN    Conakry
+    GW    Bissau
+    GY    Georgetown
+    HT    Port-au-Prince
+    HN    Olanchito
+    HN    San Pedro Sula
+    HN    Santa Rosa
+    HN    Tegucigalpa
+    HU    Budapest
+    HU    Gyor
+    HU    Szombathely
+    HU    Toalmas
+    IS    Reykjavik
+    IN    Agra
+    IN    Ahmedabad
+    IN    Amritsar
+    IN    Aurangabad
+    IN    Bangalore
+    IN    Bareilly
+    IN    Bhopal
+    IN    Bhubaneswar
+    IN    Chandigarh
+    IN    Chennai
+    IN    Cheruvathur
+    IN    Chirala
+    IN    Coimbatore
+    IN    Darasuram
+    IN    Dausa
+    IN    Delhi
+    IN    Gaya
+    IN    Ghatgaon
+    IN    Ghumli
+    IN    Gulbarga
+    IN    Hanamkonda
+    IN    Hassan
+    IN    Hubli
+    IN    Hyderabad
+    IN    Jaipur
+    IN    Jammu
+    IN    Jamshedpur
+    IN    Jeypore
+    IN    Kanpur
+    IN    Kanyakumari
+    IN    Kasaragod
+    IN    Kasauli
+    IN    Kochi
+    IN    Kodaikanal
+    IN    Kolhapur
+    IN    Kolkata
+    IN    Konark
+    IN    Kumbakonam
+    IN    Lucknow
+    IN    Madikeri
+    IN    Madurai
+    IN    Mahabalipuram
+    IN    Mandarmoni
+    IN    Mangalore
+    IN    Maram Bazar
+    IN    Mathura
+    IN    Mudumalai
+    IN    Mumbai
+    IN    Munnar
+    IN    Mysore
+    IN    Nadiad
+    IN    Nagpur
+    IN    Navi Mumbai
+    IN    New Delhi
+    IN    Ootacamund
+    IN    Panaji
+    IN    Patna
+    IN    Porbandar
+    IN    Pune
+    IN    Puri
+    IN    Rajahmundry
+    IN    Ranchi
+    IN    Secunderabad
+    IN    Shimla
+    IN    Sivakasi
+    IN    Surat
+    IN    Thiruvananthapuram
+    IN    Tiruchirapalli
+    IN    Tuticorin
+    IN    Vadodara
+    IN    Vishakhapatnam
+    IN    Vizianagaram
+    ID    Ambon
+    ID    Balikpapan
+    ID    Bandung
+    ID    Denpasar
+    ID    Djember
+    ID    Ende
+    ID    Jakarta
+    ID    Kendari
+    ID    Kupang
+    ID    Makassar
+    ID    Masohi
+    ID    Mataram
+    ID    Medan
+    ID    Padang
+    ID    Palembang
+    ID    Pomalaa
+    ID    Semarang
+    ID    Surabaya
+    ID    Ubud
+    ID    Waingapu
+    IR    Esfahan
+    IR    Shiraz
+    IR    Takab
+    IR    Tehran
+    IR    Yazd
+    IQ    Baghdad
+    IQ    Sulaimaniya
+    IE    Arklow
+    IE    Castlebar
+    IE    Cork
+    IE    Doolin
+    IE    Drogheda
+    IE    Dublin
+    IE    Galway
+    IE    Keel
+    IE    Killarney
+    IE    Leixlip
+    IE    Limerick
+    IE    New Ross
+    IE    Shannon
+    IE    Sligo
+    IE    Waterford
+    IL    Ashkelon
+    IL    Haifa
+    IL    Jerusalem
+    IL    Tel Aviv
+    IT    Ancona
+    IT    Bari
+    IT    Benevento
+    IT    Bologna
+    IT    Brindisi
+    IT    Catania
+    IT    Florence
+    IT    Fragneto Monforte
+    IT    Genoa
+    IT    Milan
+    IT    Naples
+    IT    Pisa
+    IT    Rapallo
+    IT    Rome
+    IT    Trieste
+    IT    Turin
+    IT    Venice
+    IT    Verona
+    JM    Kingston
+    JP    Akita
+    JP    Fukui
+    JP    Fukuoka
+    JP    Hiroshima
+    JP    Kagoshima
+    JP    Kawasaki
+    JP    Kyoto
+    JP    Nagasaki
+    JP    Nagoya
+    JP    Naha
+    JP    Niigata
+    JP    Okinawa
+    JP    Osaka
+    JP    Sapporo
+    JP    Sendai
+    JP    Tokyo
+    JP    Wakkana
+    JP    Yokohama
+    JP    Yokosuka
+    JO    Amman
+    JO    Aqaba
+    JO    Az Zarqa
+    KZ    Almaty
+    KZ    Astana
+    KZ    Zaysan
+    KE    Nairobi
+    KI    South Tarawa
+    KP    Pyongyang
+    KR    Busan
+    KR    Daegu
+    KR    Incheon
+    KR    Seoul
+    XK    Pristina
+    KW    Al Jahra
+    KW    Kuwait
+    KG    Bishkek
+    LA    Vientiane
+    LV    Riga
+    LB    Beirut
+    LS    Maseru
+    LR    Monrovia
+    LY    Tripoli
+    LI    Vaduz
+    LT    Kaunas
+    LT    Vilnius
+    LU    Luxembourg
+    MK    Kumanovo
+    MK    Ohrid
+    MK    Skopje
+    MG    Antananarivo
+    MW    Blantyre
+    MW    Lilongwe
+    MY    Butterworth
+    MY    George Town
+    MY    Kota Kinabalu
+    MY    Kuala Lumpur
+    MY    Kuching
+    MY    Labuan
+    MY    Langkawi
+    MY    Pangkor
+    MV    Male
+    ML    Bamako
+    MT    Mdina
+    MT    Valletta
+    MT    Victoria
+    MH    Majuro
+    MQ    Fort-de-France
+    MR    Nouakchott
+    MU    Flic en Flac
+    MU    Port Louis
+    YT    Mamoudzou
+    MX    Acapulco
+    MX    Akumal
+    MX    Bahia Kino
+    MX    Cabo San Lucas
+    MX    Cancun
+    MX    Chichen Itza
+    MX    Chihuahua
+    MX    Ciudad Acuna
+    MX    Ciudad Juarez
+    MX    Culiacan
+    MX    Ensenada
+    MX    Guadalajara
+    MX    Guaymas
+    MX    Hermosillo
+    MX    Ixtapa
+    MX    La Paz
+    MX    Las Varas
+    MX    Leon
+    MX    Los Mochis
+    MX    Manzanillo
+    MX    Matamoros
+    MX    Mazatlan
+    MX    Melaque
+    MX    Merida
+    MX    Mexicali
+    MX    Mexico City
+    MX    Monterrey
+    MX    Motul
+    MX    Nogales
+    MX    Nuevo Laredo
+    MX    Ojinaga
+    MX    Piedras Negras
+    MX    Playa del Carmen
+    MX    Progreso
+    MX    Puebla
+    MX    Puerto Penasco
+    MX    Puerto Vallarta
+    MX    Reynosa
+    MX    San Carlos
+    MX    San Sebastian del Oeste
+    MX    Santiago
+    MX    Tepic
+    MX    Tijuana
+    MX    Tizimin
+    MX    Toluca de Lerdo
+    MX    Veracruz
+    MX    Zihuatanejo
+    FM    Kolonia
+    FM    Palikir
+    MD    Balti
+    MD    Chisinau
+    MD    Tiraspol
+    MC    Monaco
+    MC    Monte Carlo
+    MN    Ulaanbaatar
+    ME    Kotor
+    ME    Podgorica
+    MA    Casablanca
+    MA    Dakhla
+    MA    Marrakech
+    MA    Rabat
+    MZ    Chimoio
+    MZ    Maputo
+    NA    Windhoek
+    NP    Biratchowk
+    NP    Damauli
+    NP    Dharan
+    NP    Itahari
+    NP    Kathmandu
+    NP    Lumbini
+    NP    Yasok
+    NL    Amersfoort
+    NL    Amsterdam
+    NL    Eindhoven
+    NL    Heerlen
+    NL    Rotterdam
+    NL    Sittard
+    NL    Sneek
+    NL    Spijkenisse
+    NL    The Hague
+    NL    Utrecht
+    NL    Zaandam
+    NC    Kone
+    NC    Noumea
+    NZ    Auckland
+    NZ    Christchurch
+    NZ    Dunedin
+    NZ    Foxton
+    NZ    Hastings
+    NZ    Kaikoura
+    NZ    Kerikeri
+    NZ    Napier
+    NZ    Paraparaumu
+    NZ    Porirua
+    NZ    Upper Hutt
+    NZ    Waikanae
+    NZ    Wellington
+    NI    Chinandega
+    NI    Granada
+    NI    Managua
+    NE    Diffa
+    NE    Niamey
+    NG    Abuja
+    NG    Calabar
+    NG    Ibadan
+    NG    Kaduna
+    NG    Lagos
+    NG    Onitsha
+    NG    Port Harcourt
+    NU    Alofi
+    MP    Saipan
+    NO    Bergen
+    NO    Floro
+    NO    Hammerfest
+    NO    Harstad
+    NO    Kristiansand
+    NO    Mo
+    NO    Narvik
+    NO    Oslo
+    NO    Stavanger
+    NO    Steinkjer
+    NO    Tromso
+    NO    Trondheim
+    NO    Vardo
+    OM    Muscat
+    PK    Bahawalpur
+    PK    Golra Sharif
+    PK    Islamabad
+    PK    Jacobabad
+    PK    Karachi
+    PK    Lahore
+    PK    Multan
+    PK    Murree
+    PK    Okara
+    PK    Peshawar
+    PK    Quetta
+    PK    Rahim Yar Khan
+    PK    Shikarpur
+    PK    Sialkot
+    PW    Koror
+    PA    Panama City
+    PG    Arawa
+    PG    Mount Hagen
+    PG    Port Moresby
+    PY    Asuncion
+    PY    Pedro Juan Caballero
+    PE    Arequipa
+    PE    Lima
+    PE    Piura
+    PE    Sullana
+    PE    Trujillo
+    PH    Bacolod
+    PH    Balabag
+    PH    Balanga
+    PH    Catarman
+    PH    Cebu
+    PH    Davao
+    PH    Dumaguete
+    PH    Iligan
+    PH    Manila
+    PH    Marawi
+    PH    Santa Cruz
+    PH    Silang
+    PH    Taguig
+    PH    Tanjay City
+    PL    Gdansk
+    PL    Kolobrzeg
+    PL    Konin
+    PL    Krakow
+    PL    Warsaw
+    PT    Aveiro
+    PT    Beja
+    PT    Braganca
+    PT    Castelo Branco
+    PT    Faro
+    PT    Lisbon
+    PT    Ponta Delgada
+    PT    Porto
+    PT    Sines
+    PT    Viana do Castello
+    PT    Vila Real
+    PR    San Juan
+    QA    Doha
+    RE    Saint-Denis
+    RO    Arad
+    RO    Bacau
+    RO    Bucharest
+    RO    Cluj
+    RO    Constanta
+    RO    Craiova
+    RO    Giurgiu
+    RO    Iasi
+    RO    Mangalia
+    RO    Oradea
+    RO    Sibiu
+    RO    Timisoara
+    RO    Tulcea
+    RU    Alupka
+    RU    Anadyr
+    RU    Anapa
+    RU    Arkhangelsk
+    RU    Arzamas
+    RU    Astrakhan
+    RU    Belgorod
+    RU    Chelyabinsk
+    RU    Cherepovets
+    RU    Chita
+    RU    Dzerzhinsk
+    RU    Ekaterinburg
+    RU    Gelendzhik
+    RU    Irkutsk
+    RU    Ivanovo
+    RU    Izhevsk
+    RU    Kabardinka
+    RU    Kaliningrad
+    RU    Kazan
+    RU    Kemerovo
+    RU    Khabarovsk
+    RU    Kolomna
+    RU    Kostroma
+    RU    Kovrov
+    RU    Krasnoyarsk
+    RU    Kronstadt
+    RU    Kungur
+    RU    Kurgan
+    RU    Kursk
+    RU    Lipetsk
+    RU    Luchegorsk
+    RU    Magadan
+    RU    Moscow
+    RU    Murmansk
+    RU    Murom
+    RU    Nakhodka
+    RU    Nizhniy Novgorod
+    RU    Novgorod
+    RU    Novorossiysk
+    RU    Novosibirsk
+    RU    Okha
+    RU    Okhotsk
+    RU    Omsk
+    RU    Ostrov
+    RU    Penza
+    RU    Perm
+    RU    Peterhof
+    RU    Petropavlovsk
+    RU    Pskov
+    RU    Rostov na Donu
+    RU    Ryazan
+    RU    Rybinsk
+    RU    Samara
+    RU    Saransk
+    RU    Sergiev Posad
+    RU    Sevastopol
+    RU    Simferopol
+    RU    Sochi
+    RU    Solovki
+    RU    St. Petersburg
+    RU    Stavropol
+    RU    Suzdal
+    RU    Taganrog
+    RU    Tomsk
+    RU    Tuapse
+    RU    Tula
+    RU    Tver'
+    RU    Ufa
+    RU    Ulan-Ude
+    RU    Valaam
+    RU    Velikiye Luki
+    RU    Vladimir
+    RU    Vladivostok
+    RU    Volgograd
+    RU    Vologda
+    RU    Volokolamsk
+    RU    Voronezh
+    RU    Votkinsk
+    RU    Yakutsk
+    RU    Yalta
+    RU    Yaroslavl
+    RU    Yevpatoriya
+    RU    Yuzhno-Sakhalinsk
+    RW    Kigali
+    SH    Jamestown
+    KN    Basseterre
+    LC    Castries
+    PM    Saint-Pierre
+    VC    Kingstown
+    WS    Apia
+    SM    San Marino
+    ST    Sao Tome
+    SA    Al Ahsa
+    SA    Dhahran
+    SA    Jeddah
+    SA    Mecca
+    SA    Medina
+    SA    Qatif
+    SA    Riyadh
+    SA    Taif
+    SN    Dakar
+    SN    Mbour
+    SN    Thies
+    RS    Belgrade
+    RS    Pirot
+    SC    Victoria
+    SL    Freetown
+    SG    Singapore
+    SX    Philipsburg
+    SK    Bratislava
+    SK    Piestany
+    SK    Prievidza
+    SI    Ljubljana
+    SB    Honiara
+    SO    Mogadishu
+    ZA    Bloemfontein
+    ZA    Cape Town
+    ZA    Durban
+    ZA    East London
+    ZA    Johannesburg
+    ZA    Kimberley
+    ZA    Knysna
+    ZA    Port Elizabeth
+    ZA    Tshwane
+    SS    Juba
+    ES    Alicante
+    ES    Almeria
+    ES    Badajoz
+    ES    Barcelona
+    ES    Bilbao
+    ES    Blanes
+    ES    Burgos
+    ES    Cartagena
+    ES    Ezcaray
+    ES    Girona
+    ES    Granada
+    ES    Hostalric
+    ES    Huelva
+    ES    Jaen
+    ES    Leon
+    ES    Madrid
+    ES    Malaga
+    ES    Oviedo
+    ES    Palma
+    ES    San Sebastian
+    ES    Santa Cruz de Tenerife
+    ES    Sevilla
+    ES    Valencia
+    ES    Valladolid
+    ES    Vitoria
+    ES    Zaragoza
+    LK    Colombo
+    LK    Dambulla
+    LK    Galle
+    LK    Hikkaduwa
+    LK    Homagama
+    LK    Kalutara
+    LK    Kandy
+    LK    Kurunegala
+    LK    Matale
+    LK    Negombo
+    LK    Polonnaruwa
+    LK    Sigiriya
+    SD    Khartoum
+    SR    Paramaribo
+    SJ    Longyearbyen
+    SZ    Mbabane
+    SE    Gavle
+    SE    Gothenburg
+    SE    Helsingborg
+    SE    Kalmar
+    SE    Karlstad
+    SE    Kiruna
+    SE    Kristianstad
+    SE    Linkoping
+    SE    Lulea
+    SE    Lund
+    SE    Malmo
+    SE    Stenungsund
+    SE    Stockholm
+    SE    Sundsvall
+    SE    Trelleborg
+    SE    Uppsala
+    SE    Visby
+    CH    Bern
+    CH    Geneva
+    CH    Lugano
+    CH    Schaffhausen
+    CH    Vevey
+    CH    Zurich
+    SY    Damascus
+    SY    Halab
+    SY    Hama
+    SY    Latakia
+    TW    Taichung
+    TW    Taipei
+    TJ    Dushanbe
+    TZ    Dar es Salaam
+    TZ    Dodoma
+    TH    Bangkok
+    TH    Buri Ram
+    TH    Chiang Mai
+    TH    Hat Yai
+    TH    Hua Hin
+    TH    Phuket
+    TH    Songkhla
+    TH    Ubon Ratchathani
+    TH    Udon Thani
+    TG    Lome
+    TO    Nuku'alofa
+    TT    Port of Spain
+    TN    Beja
+    TN    Bizerte
+    TN    El Jem
+    TN    El Kef
+    TN    Hammamet
+    TN    Kairouan
+    TN    Mahdia
+    TN    Monastir
+    TN    Nabeul
+    TN    Sidi Bou Said
+    TN    Sousse
+    TN    Takrouna
+    TN    Tozeur
+    TN    Tunis
+    TR    Alacati
+    TR    Ankara
+    TR    Bodrum
+    TR    Bursa
+    TR    Istanbul
+    TR    Izmir
+    TR    Manisa
+    TR    Marmaris
+    TR    Samsun
+    TM    Ashkhabad
+    TC    Cockburn Town
+    TV    Funafuti
+    UG    Kampala
+    UA    Chernobyl
+    UA    Dnepropetrovsk
+    UA    Donetsk
+    UA    Kharkov
+    UA    Kiev
+    UA    Lugansk
+    UA    Lviv
+    UA    Mukachevo
+    UA    Nikolaev
+    UA    Odessa
+    UA    Severodonetsk
+    UA    Uzhhorod
+    UA    Zaporozhye
+    AE    Abu Dhabi
+    AE    Al Ain
+    AE    Dubai
+    AE    Fujairah
+    AE    Masafi
+    AE    Ras Al Khaimah
+    AE    Sharjah
+    GB    Aberdeen
+    GB    Aylesbury
+    GB    Belfast
+    GB    Birmingham
+    GB    Blantyre-Hamilton
+    GB    Bristol
+    GB    Cardiff
+    GB    Dover
+    GB    Dundee
+    GB    Edinburgh
+    GB    Falmouth
+    GB    Glasgow
+    GB    Gloucester
+    GB    Leeds
+    GB    Leicester
+    GB    Liverpool
+    GB    London
+    GB    Manchester
+    GB    Newcastle upon Tyne
+    GB    Newport
+    GB    Norwich
+    GB    Plymouth
+    GB    Poole
+    GB    Portsmouth
+    GB    Reading
+    GB    Sheffield
+    GB    Swansea
+    GB    Swindon
+    US    Adak, AK
+    US    Akron, OH
+    US    Albany, NY
+    US    Albuquerque, NM
+    US    Anchorage, AK
+    US    Annapolis, MD
+    US    Ashland, OR
+    US    Atlanta, GA
+    US    Augusta, ME
+    US    Austin, TX
+    US    Baltimore, MD
+    US    Baton Rouge, LA
+    US    Bellevue, WA
+    US    Billings, MT
+    US    Birmingham, AL
+    US    Bismarck, ND
+    US    Boca Raton, FL
+    US    Boise, ID
+    US    Boston, MA
+    US    Buffalo, NY
+    US    Cannon Beach, OR
+    US    Capitola, CA
+    US    Carson City, NV
+    US    Cedar Park, TX
+    US    Champaign, IL
+    US    Chandler, AZ
+    US    Chantilly, VA
+    US    Charleston, WV
+    US    Charlotte, NC
+    US    Chattanooga, TN
+    US    Chicago, IL
+    US    Cincinnati, OH
+    US    Cleveland, OH
+    US    Colorado Springs, CO
+    US    Columbia, SC
+    US    Columbus, GA
+    US    Columbus, OH
+    US    Coos Bay, OR
+    US    Coquille, OR
+    US    Coral Springs, FL
+    US    Cupertino, CA
+    US    Dallas, TX
+    US    Dayton, OH
+    US    Del Rio, TX
+    US    Denver, CO
+    US    Des Moines, IA
+    US    Detroit, MI
+    US    DuPont, WA
+    US    Dublin, OH
+    US    Duluth, MN
+    US    Duvall, WA
+    US    El Paso, TX
+    US    Eugene, OR
+    US    Fairbanks, AK
+    US    Florence, OR
+    US    Folcroft, PA
+    US    Folsom, CA
+    US    Fort Collins, CO
+    US    Fort Defiance, AZ
+    US    Fort Worth, TX
+    US    Foster City, CA
+    US    Fremont, CA
+    US    Ft. Lauderdale, FL
+    US    Galesburg, IL
+    US    Gary, IN
+    US    Gig Harbor, WA
+    US    Grand Rapids, MI
+    US    Great Falls, MT
+    US    Helena, MT
+    US    Hillsboro, OR
+    US    Hilo, HI
+    US    Honokaa, HI
+    US    Honolulu, HI
+    US    Houston, TX
+    US    Howland Island
+    US    Hudson, MA
+    US    Huntington, WV
+    US    Indianapolis, IN
+    US    Irvine, CA
+    US    Jackson, MS
+    US    Jacksonville, FL
+    US    Jefferson City, MO
+    US    Jersey City, NJ
+    US    Kamuela, HI
+    US    Kansas City, MO
+    US    Koloa, HI
+    US    Kosciusko, MS
+    US    La Jolla, CA
+    US    Lafayette, LA
+    US    Lakeland, FL
+    US    Lansing, MI
+    US    Las Vegas, NV
+    US    Laupahoehoe, HI
+    US    Lexington, KY
+    US    Lincoln, NE
+    US    Little Rock, AR
+    US    Long Beach, CA
+    US    Long Branch, NJ
+    US    Los Angeles, CA
+    US    Louisville, KY
+    US    Lubbock, TX
+    US    Madison, WI
+    US    Magnolia, TX
+    US    Melbourne, FL
+    US    Memphis, TN
+    US    Menlo Park, CA
+    US    Miami, FL
+    US    Mill Valley, CA
+    US    Milwaukee, WI
+    US    Minneapolis, MN
+    US    Miramar, FL
+    US    Mobile, AL
+    US    Molalla, OR
+    US    Monterey, CA
+    US    Montgomery, AL
+    US    Montgomery, TX
+    US    Montpelier, VT
+    US    Mount Shasta City, CA
+    US    Mountain View, CA
+    US    Myrtle Beach, SC
+    US    Nashville, TN
+    US    Navasota, TX
+    US    New Orleans, LA
+    US    New York, NY
+    US    Newark, NJ
+    US    Niagara Falls, NY
+    US    Nome, AK
+    US    Norfolk, VA
+    US    North Bend, OR
+    US    Ocala, FL
+    US    Oklahoma City, OK
+    US    Olympia, WA
+    US    Omaha, NE
+    US    Orlando, FL
+    US    Pahoa, HI
+    US    Palo Alto, CA
+    US    Parsippany, NJ
+    US    Pearl, MS
+    US    Pensacola, FL
+    US    Philadelphia, PA
+    US    Phoenix, AZ
+    US    Pierre, SD
+    US    Pittsburgh, PA
+    US    Point Pleasant Beach, NJ
+    US    Port Angeles, WA
+    US    Port Orange, FL
+    US    Portland, OR
+    US    Princeton, NJ
+    US    Quartzsite, AZ
+    US    Raleigh, NC
+    US    Redmond, WA
+    US    Reno, NV
+    US    Richmond, IN
+    US    Richmond, VA
+    US    Rio Rancho, NM
+    US    Riverton, UT
+    US    Russell Springs, KY
+    US    Sacramento, CA
+    US    Salem, OR
+    US    Salt Lake City, UT
+    US    San Antonio, TX
+    US    San Bruno, CA
+    US    San Diego, CA
+    US    San Francisco, CA
+    US    San Jose, CA
+    US    San Luis Obispo, CA
+    US    San Mateo, CA
+    US    Santa Clara, CA
+    US    Santa Fe, NM
+    US    Saxonburg, PA
+    US    Seattle, WA
+    US    South Jordan, UT
+    US    Spokane, WA
+    US    Spring Hill, FL
+    US    St. Louis, MO
+    US    St. Paul, MN
+    US    Stamford, CT
+    US    Sunnyvale, CA
+    US    Surprise, AZ
+    US    Syracuse, NY
+    US    Tacoma, WA
+    US    Tampa, FL
+    US    Telluride, CO
+    US    Toledo, OH
+    US    Tucson, AZ
+    US    Tulsa, OK
+    US    Vienna, VA
+    US    Waikoloa, HI
+    US    Wailua, HI
+    US    Waimea, HI
+    US    Washington, DC
+    US    West Wendover, NV
+    US    Westford, MA
+    US    Wichita, KS
+    US    Window Rock, AZ
+    US    Winston-Salem, NC
+    UY    Montevideo
+    UY    Rivera
+    UY    Salto
+    UY    San Carlos
+    UY    Tacuarembo
+    UZ    Tashkent
+    VU    Port Vila
+    VE    Barcelona
+    VE    Caracas
+    VN    Da Nang
+    VN    Hai Phong
+    VN    Hanoi
+    VN    Ho Chi Minh
+    VG    Road Town
+    VI    Charlotte Amalie
+    WF    Mata-Utu
+    YE    Aden
+    YE    Al Bayda'
+    YE    Al Hudaydah
+    YE    Dhamar
+    YE    Ibb
+    YE    Sanaa
+    YE    Taiz
+    ZM    Lusaka
+    ZW    Harare
+
+TM004_TC007_verify user cannot update My Account page without City info
+    open paxxioneer
+    open login form from homepage
+    login    ${PAX USERNAME}    Abc123
+    click function page from dropdown    ${dropdown my account link}
+    ${first name}    Generate Random String    5
+    ${last name}    Generate Random String    5
+    Input Text    ${my account first name field}    ${first name}
+    Input Text    ${my account last name field}    ${last name}
+    Select From List By Value    ${my account country field}    US
+    Click Button    ${my account update button}
+    ${message}    Get Text    css=div.message.ng-binding
+    Should Be Equal    ${message}    Profile validation failed
+
+TM004_TC008_verify user can update My Account page with Country/City
+    go to my account page
+    select country city    AR    Bahia Blanca
+
+TM004_TC009_verify user can input intro text and it is visibled in front-end
+    open paxxioneer
+    open login form from homepage
+    login    ${PAX USERNAME}    Abc123
+    click function page from dropdown    ${dropdown my account link}
+    scroll and click element    css=legend    ${my account intro field}
+    ${text}    Generate Random String    30
+    Clear Element Text    ${my account intro field}
+    Input Text    ${my account intro field}    ${text}
+    Click Element    ${my account update button}
+    verify message popup    ${profile message update successful}
+    open paxxioneer profile    ${PAX USERNAME}
+    ${temp}    Get Text    ${intro text}
+    Comment    ${text length}    Get Length    ${temp}
+    Comment    Convert To Integer    ${text length}
+    Comment    ${text length}    Set Variable    ${text length - 1}
+    Comment    ${temp}    Get Substring    ${temp}    1    ${text length}
+    Comment    ${temp 2}    Set Variable    ${text}
+    Should Be Equal    ${temp}    ${text}
+
+TM004_TC010_verify user can input public text and it is visibled in front-end
+    open paxxioneer
+    open login form from homepage
+    login    ${PAX USERNAME}    Abc123
+    click function page from dropdown    ${dropdown my account link}
+    scroll and click element    ${my account tell public more about}    ${my account tell public more about}
+    ${text}    Generate Random String    30
+    Clear Element Text    ${my account tell public more about}
+    Input Text    ${my account tell public more about}    ${text}
+    Click Element    ${my account update button}
+    verify message popup    ${profile message update successful}
+    open paxxioneer profile    ${PAX USERNAME}
+    sleep    3s
+    scroll and click element    link=Profile    //a[contains(text(),'Read more')]
+    ${temp}    Get Text    ${tell public text}
+    ${temp 2}    Set Variable    ${text}
+    Convert To String    ${temp}
+    Should Be Equal As Strings    ${temp}    ${temp 2}
+
+TM004_TC011_verify user can upload image to my account
+    [Tags]    test
+    open paxxioneer
+    open login form from homepage
+    login    ${PAX USERNAME}    Abc123
+    click function page from dropdown    ${dropdown my account link}
+    Click Element    xpath=(//input[@type='file'])[2]
+    Wait For Active Window    File Upload
+    Send    vonhaitu3.png
+    AutoItLibrary.Mouse Click    LEFT    535    446    1
+    Switch Browser    1
+    Wait Until Element Is Visible    css=p > img
+    Element Should Be Visible    css=p > img
+    Click Button    ${my account update button}
+    verify message popup    ${profile message update successful}

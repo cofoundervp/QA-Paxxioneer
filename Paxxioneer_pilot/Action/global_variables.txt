@@ -1,0 +1,33 @@
+*** Variables ***
+${insider_username}    default_paxxioneer_qa_auto
+${customer_username}    cus-1
+${insider_password}    Abc123
+${customer_password}    Abc123
+${test data path}    E:\Selenium-Pax\Paxxioneer_pilot\
+${PAX USERNAME}    default_paxxioneer_qa_auto
+${PAX EMAIL}      ${EMPTY}
+${profile message update successful}    Profile updated.
+${profile message update fail}    Profile validation failed
+${video url 1}    https://www.youtube.com/watch?v=bD7bpG-zDJQ
+${video url 2}    https://www.youtube.com/watch?v=gYbW1F_c9eM
+${video url 3}    https://www.youtube.com/watch?v=ICsryK_w9P0
+${url video 4}    https://www.youtube.com/watch?v=uEQBScx2nHg
+${url video 5}    https://www.youtube.com/watch?v=JNwNXF9Y6kY
+${url video 6}    https://www.youtube.com/watch?v=yRhLdAyKIFw
+${url video 7}    https://www.youtube.com/watch?v=JuCKf_XTC5Y
+${experience name}    ${EMPTY}
+${customer global}    emailtest
+${booking info date and time}    ${EMPTY}
+${booking info single price}    ${EMPTY}
+${booking info final price}    ${EMPTY}
+${booking info number of participant}    ${EMPTY}
+${booking info total price}    ${EMPTY}
+${global first message}    ${EMPTY}
+${global rounded_minute}    ${EMPTY}
+${PAX MESSAGE}    ${EMPTY}
+${booking id}     ${EMPTY}
+${COL TEMP}       ${EMPTY}
+${ROW TEMP}       ${EMPTY}
+${today column}    ${1}
+${today row}      ${10}
+${number of participant}    4

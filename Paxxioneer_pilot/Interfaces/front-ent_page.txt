@@ -1,0 +1,13 @@
+*** Variables ***
+${intro text}     css=p.medium-active-element
+${tell public text}    css=div.blink > p.ng-binding > p.medium-active-element
+${action word text on fron-ent}    //div[@id='view']/hero/section/div[3]/div/div/div[2]/h4
+${tag 1 on front-end}    //div[@id='view']/hero/section/div[3]/div/div/div[2]/div/span[1]
+${tag 2 on front-end}    //div[@id='view']/hero/section/div[3]/div/div/div[2]/div/span[2]
+${tag 3 on front-end}    //div[@id='view']/hero/section/div[3]/div/div/div[2]/div/span[3]
+${default banner}    css=div.hero-slider
+${banner with video}    css=div.video-thumb
+${banner with image}    css=div.bg-img.ng-scope
+${price calculate and text}    //aside[@id='text-2']/div[2]/div/div[3]/span
+${number of people}    name=numberOfPeople
+${total price text}    //div[@class="col-sm-6 text-right"]
