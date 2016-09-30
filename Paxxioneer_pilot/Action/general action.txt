@@ -236,7 +236,7 @@ global wait
     sleep    3s
 
 config
-    Set Selenium Implicit Wait    15s
+    Comment    Set Selenium Implicit Wait    15s
 
 click by mouse
     [Arguments]    ${button}

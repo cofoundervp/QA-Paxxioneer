@@ -28,6 +28,6 @@ ${PAX MESSAGE}    ${EMPTY}
 ${booking id}     ${EMPTY}
 ${COL TEMP}       ${EMPTY}
 ${ROW TEMP}       ${EMPTY}
-${today column}    ${1}
-${today row}      ${10}
+${today column}    ${4}
+${today row}      ${13}
 ${number of participant}    4
