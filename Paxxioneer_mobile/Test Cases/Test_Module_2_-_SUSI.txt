@@ -32,6 +32,8 @@ TM002_TC002_Verify customer can sign in
 TM002_TC003_verify user can sign up with facebook
     [Tags]    sanity
     open signup form
+    Click Element    ${login_login with facebook button}
+    Wait Until Page Contains    ${fb_logo}
 
 TM002_TC004_verify paxxioneer can sign in
     [Tags]    sanity    demo

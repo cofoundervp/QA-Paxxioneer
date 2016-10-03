@@ -16,3 +16,4 @@ Library           AppiumLibrary
 Resource          ../Interfaces/sign_up_form.txt
 Resource          sign_up_keywords.txt
 Resource          ../Interfaces/meet_paxxioneer_interfaces.txt
+Resource          ../Interfaces/interface_facebook.txt
