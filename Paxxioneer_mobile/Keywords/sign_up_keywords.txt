@@ -24,3 +24,8 @@ sign up
     open signup form
     fill info to all fields to sign up form    ${arg_username}    ${arg_email}    ${arg_password}
     Click Element    ${su_sign up now button}
+
+create a new facebook test account
+    Open Application    http://localhost:4723/wd/hub    platformName=Android    platformVersion=4.4.2    deviceName=${config_device name}    browserName=Browser
+    Go To Url    https://m.facebook.com/
+    Wait Until Page Contains Element    ${fb_login button}

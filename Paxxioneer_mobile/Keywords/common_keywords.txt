@@ -17,7 +17,7 @@ open paxxioneer in a new browser
     ...    ${browser} == ff
     ...
     ...    ${environment} == staging
-    Open Application    http://localhost:4723/wd/hub    platformName=Android    platformVersion=4.4.2    deviceName=emulator-5554    browserName=Browser
+    Open Application    http://localhost:4723/wd/hub    platformName=Android    platformVersion=4.4.2    deviceName=${config_device name}    browserName=Browser
     Go To Url    http://${kw_arg_environment}.paxxioneer.${kw_end domain}
     AppiumLibrary.Set Appium Timeout    15
 

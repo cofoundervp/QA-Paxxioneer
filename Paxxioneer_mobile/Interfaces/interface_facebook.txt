@@ -1,4 +1,5 @@
 *** Variables ***
 ${fb_logo}        //a[@href="https://www.facebook.com/"]
-${fb_email login field}    //input[@id="email"]
-${fb_password login field}    //input[@id="pass"]
+${fb_email login field}    //input[@name="email"]
+${fb_password login field}    //input[@name="pass"]
+${fb_login button}    //input[@name="login"]
