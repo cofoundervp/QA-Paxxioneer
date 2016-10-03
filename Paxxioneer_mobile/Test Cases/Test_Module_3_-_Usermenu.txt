@@ -1,1 +1,70 @@
+*** Settings ***
+Resource          ../Keywords/resource config.txt
+
 *** Test Cases ***
+TM003_TC001_Verify paxxioneer account can access Your Booking, My Experience, My Profile, My Blog, My Account
+    [Documentation]    1. Load paxxioneer page
+    ...
+    ...    2. login with paxxioneer account
+    ...
+    ...    3. Verify all items of paxxioneer account cound be seen under header menu
+    ...
+    ...    4. Navigate to each page and verify page is loaded successfully with recent of unique element on each page
+    [Tags]    sanity
+    [Setup]    start paxxioneer with default config
+    # wait for paxxioneer launch successfully
+    Wait Until Page Contains Element    ${homepage_animated gif}
+    # ==============
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Open Login form, then login with paxxioneer account
+    open login form and login    ${gb_paxxioneer username}    ${gb_password}
+    global cooldown
+    # ==============
+    # Verify paxxioneer's header menu has Your Booking, My Experience, My Profile, My Blog, My Account
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Verify paxxioneer's header menu has Your Booking, My Experience, My Profile, My Blog, My Account
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    open header menu
+    open or close header menu
+    Capture Page Screenshot
+    Log    Screenshot captured! Please verify manually if need    TRACE
+    Page Should Contain Element    ${cm_header_your booking}    # verify if "your booking" button is presented
+    Page Should Contain Element    ${cm_header_my experience}    # verify if "my experience" button is presented
+    Page Should Contain Element    ${cm_header_my account}    # verify if "my account" button is presented
+    Page Should Contain Element    ${cm_header_my blog}    # verify if "my blog" button is presented
+    Page Should Contain Element    ${cm_header_my profile}    # verify if "my profile" button is presented
+    # ==============
+    # Verify paxxioneer can access Your Booking page
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Click Your Booking item under header menu
+    Click Element    ${cm_header_your booking}
+    global cooldown
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Verifying Your Booking page displays with 4 sections: going to meet, have met, declined, and expired
+    ${tc_flag}    Run Keyword And Return Status    Page Should Contain Element    ${your_booking_who I am going to meet section header}
+    VERIFY WITH ERROR HANDLE    ${tc_flag}    Who I am going to meet header found    Who I am going to meet header is not found
+    ${tc_flag}    Run Keyword And Return Status    Page Should Contain Element    ${your booking_who I have met section header}
+    VERIFY WITH ERROR HANDLE    ${tc_flag}    Who I have met header found    Who I have met header is not found
+    ${tc_flag}    Run Keyword And Return Status    Page Should Contain Element    ${your booking_declined booking header}
+    VERIFY WITH ERROR HANDLE    ${tc_flag}    Declined booking header found    Declined booking header is not found
+    ${tc_flag}    Run Keyword And Return Status    Page Should Contain Element    ${your booking_expired booking section header}
+    VERIFY WITH ERROR HANDLE    ${tc_flag}    Expired header found    Expired header is not found
+    # ==============
+    # Verify paxxioneer can access My Experience page
+    navigate to page under header menu    My Experience
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Verifying if New Experience button is presented
+    ${tc_flag}    Run Keyword And Return Status    Page Should Contain Element    ${my experience_new experience button}
+    VERIFY WITH ERROR HANDLE    ${tc_flag}    New Experience button is present    New Experience button is not found
+    # ==============
+    # Verify paxxioneer can access My Profile page
+    navigate to page under header menu    My Profile
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Verifying if My Profile page is opened by the title "Edit my profile"
+    ${tc_flag}    Run Keyword And Return Status    Page Should Contain Element    ${my profile_edit your profile}
+    VERIFY WITH ERROR HANDLE    ${tc_flag}    "Edit my proflie" is present    Missing "Edit my profile"
+    # ==============
+    # Verify paxxioneer can access My Blog page by seeing the header "My recent post"
+    navigate to page under header menu    My Blog
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Verifying if My Blog page is opened by the title "My recent posts"
+    ${tc_flag}    Run Keyword And Return Status    Page Should Contain Element    ${my blog_my recent post}
+    VERIFY WITH ERROR HANDLE    ${tc_flag}    "My recent posts" is present    "My recent posts" is not found
+    # ==============
+    # Verify paxxioneer can access My Account page by seeing the button "send verification code"
+    navigate to page under header menu    My Account
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Verifying if My Account page is opened by the button "Send verification code"
+    ${tc_flag}    Run Keyword And Return Status    Page Should Contain Element    ${my account_send verification code button}
+    VERIFY WITH ERROR HANDLE    ${tc_flag}    "Send verification code" button is found    "Send verification code" button is not found

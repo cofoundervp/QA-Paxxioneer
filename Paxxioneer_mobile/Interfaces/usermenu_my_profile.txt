@@ -1,0 +1,2 @@
+*** Variables ***
+${my profile_edit your profile}    //h2[contains(text(),'Edit My Profile')]

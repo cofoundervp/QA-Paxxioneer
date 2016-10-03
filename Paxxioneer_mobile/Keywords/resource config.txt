@@ -17,3 +17,8 @@ Resource          ../Interfaces/sign_up_form.txt
 Resource          sign_up_keywords.txt
 Resource          ../Interfaces/meet_paxxioneer_interfaces.txt
 Resource          ../Interfaces/interface_facebook.txt
+Resource          ../Interfaces/usermenu_your_booking.txt
+Resource          ../Interfaces/usermenu_my_experience_page.txt
+Resource          ../Interfaces/usermenu_my_profile.txt
+Resource          ../Interfaces/usermenu_my_blog.txt
+Resource          ../Interfaces/usermenu_my_account.txt

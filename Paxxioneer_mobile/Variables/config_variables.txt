@@ -1,6 +1,6 @@
 *** Variables ***
 ${config_wait_time}    2s
-${config_browser}    ff
+${config_browser}    Chrome
 ${config_environment}    staging
 ${config_end domain}    cvp.io
 ${config_device name}    F4AZB707N492    # Asus Zenfone 2 - 4.4.2

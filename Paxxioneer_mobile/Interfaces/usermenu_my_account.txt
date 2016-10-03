@@ -1,0 +1,2 @@
+*** Variables ***
+${my account_send verification code button}    //button[contains(text(),'Send verification code')]

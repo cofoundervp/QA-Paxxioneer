@@ -1,0 +1,5 @@
+*** Variables ***
+${your_booking_who I am going to meet section header}    //div[@class="entry-content"]/div/booking-list[@title="Who I'm going to meet..."]
+${your booking_who I have met section header}    //div[@class="entry-content"]/div/booking-list[@title="Who I've met..."]
+${your booking_declined booking header}    //div[@class="entry-content"]/div/booking-list[@title="Declined Bookings..."]
+${your booking_expired booking section header}    //div[@class="entry-content"]/div/booking-list[@title="Expired Bookings..."]

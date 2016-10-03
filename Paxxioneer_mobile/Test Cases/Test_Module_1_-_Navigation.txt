@@ -64,6 +64,7 @@ TM001_TC004_Verify "What is Paxxioneer" link is present and navigated to correct
 
 TM001_TC005_Verify 3 links next to Why Paxxioneer link are: "Meet passionate people", "Make your journey meaningful" and "Share your passions"
     [Tags]    sanity
+    [Setup]    start paxxioneer with default config
     WRITE MESSAGE TO CONSOLE AND LOG FILE    Wait for the gif image is present
     Wait Until Page Contains Element    ${homepage_animated gif}
     # scroll page to make why paxxioneer section shows

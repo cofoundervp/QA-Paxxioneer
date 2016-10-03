@@ -1,0 +1,2 @@
+*** Variables ***
+${my experience_new experience button}    //a[contains(text(),'New Experience')]
