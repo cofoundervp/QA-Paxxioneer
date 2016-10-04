@@ -1,2 +1,8 @@
 *** Variables ***
 ${my experience_new experience button}    //a[contains(text(),'New Experience')]
+${my experience_up button of first activity}    //a[@class="btn btn-default btn-xs up"]
+${my experience_ down button of first activity}    //a[@class="btn btn-default btn-xs down"]
+${my experience_delete button of first activiy}    //a[@class="btn btn-danger btn-xs"]
+${my experience_edit info button of first activity}    //a[@class="btn btn-default btn-xs" and @original-title="Edit"]
+${my experience_edit timeslot of first activity}    //a[@class="btn btn-default btn-xs" and @original-title="Edit Timeslot"]
+${my experience_participant summary button of first activity}    //a[@class="btn btn-default btn-xs" and @original-title="Participant Summary"]
