@@ -153,13 +153,13 @@ disable multiple paxxioneers
     Repeat Keyword    100 times    disable 1 paxxioneer
 
 create 101 line of chat
-    [Tags]
+    [Tags]    test
     open paxxioneer
     open login form from homepage
     login    ${PAX USERNAME}    Abc123
     Click Element    ${message button}
     Click Element    //a[@href="/user/message/57ec8de27610f5106ac8077b//view/"]
-    :FOR    ${i}    IN RANGE    0    101
+    : FOR    ${i}    IN RANGE    0    101
     \    Input Text    ${msg text field}    ${i}
     \    Press Key    ${msg text field}    \\13
 
