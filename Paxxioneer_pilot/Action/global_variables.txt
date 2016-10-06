@@ -29,5 +29,5 @@ ${booking id}     ${EMPTY}
 ${COL TEMP}       ${EMPTY}
 ${ROW TEMP}       ${EMPTY}
 ${today column}    ${4}
-${today row}      ${13}
+${today row}      ${4}
 ${number of participant}    4
