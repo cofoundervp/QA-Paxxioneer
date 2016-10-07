@@ -92,7 +92,7 @@ TM007_TC007_verify payment page
     scroll and click element    link=Profile    ${first activity}
     ${today day}    get today day
     click today on booking calendar    ${today day}
-    Click Button    ${book button on front end}
+    scroll and click element    ${book button on front end}    ${book button on front end}
     #Verify header text Payment is shown
     ${check point}    Get Text    css=h2
     Should Be Equal    ${check point}    Payment
@@ -107,7 +107,7 @@ TM007_TC008_verify user cannot book without message
     scroll and click element    link=Profile    ${first activity}
     ${today day}    get today day
     click today on booking calendar    ${today day}
-    Click Button    ${book button on front end}
+    scroll and click element    ${book button on front end}    ${book button on front end}
     sleep    5s
     #Verify header text Payment is shown
     ${check point}    Get Text    css=h2
@@ -127,7 +127,7 @@ TM007_TC009_verify user can see thank you page after booking and get first messa
     scroll and click element    link=Profile    ${first activity}
     ${today day}    get today day
     click today on booking calendar    ${today day}
-    Click Button    ${book button on front end}
+    scroll and click element    ${book button on front end}    ${book button on front end}
     #Verify header text Payment is shown
     ${check point}    Get Text    css=h2
     Should Be Equal    ${check point}    Payment
@@ -152,7 +152,7 @@ TM007_TC010_verify booking info on thank you page match booking info on payment 
     scroll and click element    link=Profile    ${first activity}
     ${today day}    get today day
     click today on booking calendar    ${today day}
-    Click Button    ${book button on front end}
+    scroll and click element    ${book button on front end}    ${book button on front end}
     sleep    5s
     #Verify header text Payment is shown
     ${check point}    Get Text    css=h2
