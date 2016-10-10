@@ -1,4 +1,6 @@
 *** Settings ***
+Test Setup        start paxxioneer with default config
+Test Teardown     Close Application
 Resource          ../Keywords/resource config.txt
 
 *** Test Cases ***
@@ -68,3 +70,21 @@ TM003_TC001_Verify paxxioneer account can access Your Booking, My Experience, My
     WRITE MESSAGE TO CONSOLE AND LOG FILE    Verifying if My Account page is opened by the button "Send verification code"
     ${tc_flag}    Run Keyword And Return Status    Page Should Contain Element    ${my account_send verification code button}
     VERIFY WITH ERROR HANDLE    ${tc_flag}    "Send verification code" button is found    "Send verification code" button is not found
+
+TM003_TC002_Verify paxxioneer can manage activity in My Experience page
+    [Setup]    start paxxioneer with default config
+    # wait for paxxioneer launch successfully
+    Wait Until Page Contains Element    ${homepage_animated gif}
+    # login with paxxioneer
+    open login form and login    ${gb_paxxioneer username}    ${gb_password}
+    # go to My Experience page
+    navigate to page under header menu    My Experience
+    #wait until New Experience button present
+    Wait Until Page Contains Element    ${my experience_new experience button}
+    ${tc_experience name 1}    generate experience name
+    ${tc_price 1}    random number
+    create experience    ${tc_experience name 1}    ${tc_price 1}    Per Day
+    navigate to page under header menu    My Experience
+    ${tc_experience name 2}    generate experience name
+    ${tc_price 2}    random number
+    create experience    ${tc_experience name 2}    ${tc_price 2}    Per Day
