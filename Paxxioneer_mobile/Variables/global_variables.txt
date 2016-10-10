@@ -5,4 +5,4 @@ ${gb_email domain}    @mailinator.com
 ${gb_password}    Abc123
 ${gb_customer username}    default_customer_qa_auto
 ${gb_customer email}    default_customer_qa_auto@mailinator.com
-${gb_paxxioneer username}    2016-02-26-a3wujikmtox
+${gb_paxxioneer username}    default_paxxioneer_qa_auto

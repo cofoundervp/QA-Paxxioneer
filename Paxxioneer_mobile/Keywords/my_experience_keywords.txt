@@ -66,7 +66,6 @@ select country city for new experience
     global cooldown
     # select type
     Switch To Context    NATIVE_APP
-    Scroll Down    //*[@text='${country name}']
     Click Element    //*[@text='${country name}']
     global cooldown
     Switch To Context    WEBVIEW_1
@@ -121,3 +120,16 @@ random number
     ${number}    Convert To Integer    ${number}
     WRITE MESSAGE TO CONSOLE AND LOG FILE    Number created!
     [Return]    ${number}
+
+    [Arguments]    ${item name}    ${list locator}
+    [Documentation]    Looking for the given ${item name} in the given list locator ${list locator}
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Start looking for the given item in the given list
+    :FOR    ${i}    IN RANGE    1    100
+    \    ${kw_flag}    Run Keyword And Return Status    Page Should Contain Element    //*[@text='${item name}']
+    \    Run Keyword If    '${kw_flag}' == 'True'    Exit For Loop
+    \    Run Keyword If    '${kw_flag}' == 'False'    Click Element    //*[contains(@resource-id,'android:id/text1') and @index='7']
+    \    global cooldown
+    \    Switch To Context    WEBVIEW_1
+    \    Click Element    ${list locator}
+    \    Switch To Context    NATIVE_APP
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Finding process completed!
