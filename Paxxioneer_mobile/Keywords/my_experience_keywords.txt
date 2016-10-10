@@ -1,0 +1,123 @@
+*** Settings ***
+Resource          resource config.txt
+
+*** Keywords ***
+create experience
+    [Arguments]    ${experience name}    ${price}    ${type}    # Type = Session or Person
+    [Documentation]    Pre-conditions:
+    ...
+    ...    Check if button "New Experience" is available. If yes, click it, else, return fail and exit keyword
+    ...
+    ...    Step:
+    ...
+    ...    1. Click New Experience button
+    ...
+    ...    2. Input ${experience name} to experience name field
+    ...
+    ...    3. Input ${price} to price field
+    ...
+    ...    4. Select ${type} for activity type
+    ...
+    ...    5. Select Vietnam for Country dropdown list
+    ...
+    ...    6. Select Ho Chi Minh for City dropdown list
+    ...
+    ...    7. Click Step 2 button
+    # Call "create experience" keyword
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Keyword entrance: "Create Experience" keyword is called
+    ${flag}    Run Keyword And Return Status    Wait Until Page Contains Element    ${my experience_new experience button}
+    Run Keyword If    ${flag} == True    Click Element    ${my experience_new experience button}
+    ...    ELSE    Log    FAIL    New Experience button is not founded
+    Wait Until Page Contains Element    ${edit experience_experience name}
+    Input Text    ${edit experience_experience name}    ${experience name}
+    Wait Until Page Contains Element    ${edit experience_cost field}
+    Input Text    ${edit experience_cost field}    ${price}
+    select experience type    ${type}
+    select country city for new experience    Vietnam    Ho Chi Minh
+    Comment    ${note text}    generate words    200
+    Comment    Input Text    ${my experience note}    ${note text}
+    Comment    ${policy text}    generate words    100
+    Comment    Input Text    ${my experience policty}    ${policy text}
+    Click Element    ${edit experience_step 2 timeslot button}
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Experience created successfully! NOTE: Timeslot has not been added yet
+
+select country city for new experience
+    [Arguments]    ${country name}    ${city name}
+    [Documentation]    1. Click Country dropdown list
+    ...
+    ...    2. Switch context to NATIVE_APP
+    ...
+    ...    3. Select the country as ${country name}
+    ...
+    ...    4. Cooldown
+    ...
+    ...    4. Return context to WEBVIEW_1
+    ...
+    ...    5. Click City dropdown list
+    ...
+    ...    6. Switch context to NATIVE_APP
+    ...
+    ...    7. Select city as ${city name}
+    ...
+    ...    8. Switch back to context WEBVIEW_1
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Keyword Entrance: selecting country
+    # Click Cost Type dropdown list
+    Click Element    ${experience country field}
+    global cooldown
+    # select type
+    Switch To Context    NATIVE_APP
+    Scroll Down    //*[@text='${country name}']
+    Click Element    //*[@text='${country name}']
+    global cooldown
+    Switch To Context    WEBVIEW_1
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Selecting country, DONE!
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Selecting city
+    Click Element    ${experience city field}
+    global cooldown
+    # select type
+    Switch To Context    NATIVE_APP
+    Click Element    //*[@text='${city name}']
+    global cooldown
+    Switch To Context    WEBVIEW_1
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Selecting city, DONE!
+
+generate experience name
+    [Documentation]    Generate a random 15 characters for experience name
+    ...
+    ...    Return value to ${name}
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    "Generate experience name" keyword is called. Generate a random 15 characters for experience name
+    ${name}    Generate Random String    15
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Create experiecen name keyword done!
+    [Return]    ${name}
+
+select experience type
+    [Arguments]    ${arg_type}
+    [Documentation]    1. Click Experience type dropdown list
+    ...
+    ...    2. Switch context to NATIVE_APP
+    ...
+    ...    3. Select type as ${arg_type}
+    ...
+    ...    4. Switch context to WEBVIEW_1
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Selecting the exeprience's type
+    # Click Cost Type dropdown list
+    Get Contexts
+    ${check}    Get Current Context
+    Click Element    ${edit experience_cost type}
+    global cooldown
+    # select type
+    Switch To Context    NATIVE_APP
+    Get Contexts
+    ${check}    Get Current Context
+    Click Element    //*[@text='${arg_type}']
+    global cooldown
+    Switch To Context    WEBVIEW_1
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Selecting experience type, DONE!
+
+random number
+    [Documentation]    Generate a random number and return value to ${number}
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Create a random number with 2 digits
+    ${number}    Generate Random String    2    [NUMBERS]
+    ${number}    Convert To Integer    ${number}
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Number created!
+    [Return]    ${number}
