@@ -22,3 +22,4 @@ Resource          ../Interfaces/usermenu_my_experience_page.txt
 Resource          ../Interfaces/usermenu_my_profile.txt
 Resource          ../Interfaces/usermenu_my_blog.txt
 Resource          ../Interfaces/usermenu_my_account.txt
+Resource          ../Keywords/my_experience_keywords.txt
