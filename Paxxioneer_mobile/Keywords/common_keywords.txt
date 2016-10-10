@@ -44,7 +44,7 @@ scroll and click
 
 open login form and login
     [Arguments]    ${arg_username}    ${arg_password}
-    open or close header menu
+    Comment    open or close header menu
     WRITE MESSAGE TO CONSOLE AND LOG FILE    Open Login form
     Click Element    ${cm_header_login link}
     # wait until email address field is shown
@@ -52,6 +52,7 @@ open login form and login
     Input Text    ${username field}    ${arg_username}
     Input Text    ${password field}    ${arg_password}
     Click Element    ${login now button}
+    global cooldown
 
 generate username
     ${date}    Get Current Date    result_format=%Y-%m-%d
@@ -90,7 +91,6 @@ navigate to page under header menu
     ...    2. Click ${arg_page name}
     ...
     ...    3. cool down
-    ...
     ...
     open or close header menu
     Click Element    //a[contains(text(),'${arg_page name}')]
