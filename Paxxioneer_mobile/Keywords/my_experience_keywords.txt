@@ -66,6 +66,7 @@ select country city for new experience
     global cooldown
     # select type
     Switch To Context    NATIVE_APP
+    look for item in a list    ${country name}    ${experience country field}
     Click Element    //*[@text='${country name}']
     global cooldown
     Switch To Context    WEBVIEW_1
@@ -121,6 +122,7 @@ random number
     WRITE MESSAGE TO CONSOLE AND LOG FILE    Number created!
     [Return]    ${number}
 
+look for item in a list
     [Arguments]    ${item name}    ${list locator}
     [Documentation]    Looking for the given ${item name} in the given list locator ${list locator}
     WRITE MESSAGE TO CONSOLE AND LOG FILE    Start looking for the given item in the given list
