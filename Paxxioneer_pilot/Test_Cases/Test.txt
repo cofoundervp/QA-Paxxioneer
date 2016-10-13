@@ -18,11 +18,11 @@ Library           String
 Resource          ../Action/global_variables.txt
 Library           Collections
 Resource          ../Interfaces/front-ent_page.txt
-Library           AutoItLibrary
 Resource          ../Interfaces/profile_page.txt
 Resource          ../Action/my_experience_action.txt
 Resource          ../Interfaces/your_booking_page.txt
 Resource          ../Interfaces/message_page.txt
+Library           AutoItLibrary
 
 *** Test Cases ***
 Test
@@ -162,6 +162,33 @@ create 101 line of chat
     : FOR    ${i}    IN RANGE    0    101
     \    Input Text    ${msg text field}    ${i}
     \    Press Key    ${msg text field}    \\13
+
+auto upload profile
+    go to my account page
+    global wait
+    :FOR    ${i}    IN RANGE    1    450
+    \    Click Element    //div[@class="spacer"]
+    \    sleep    1s
+    \    Click Element    //input[@type="file"]
+    \    Wait For Active Window    File Upload
+    \    Send    up1.png
+    \    sleep    1s
+    \    AutoItLibrary.Control Click    File Upload    &Open    [CLASS:Button; INSTANCE:1]    LEFT
+    \    sleep    3s
+    \    Click Element    //button[@class="btn-primary ng-isolate-scope"]
+    \    Wait Until Element Is Not Visible    //button[@class="btn-primary ng-isolate-scope"]
+    \    sleep    5s
+    \    Click Element    //div[@class="spacer"]
+    \    sleep    1s
+    \    Click Element    //input[@type="file"]
+    \    Wait For Active Window    File Upload
+    \    Send    up2.jpg
+    \    sleep    1s
+    \    AutoItLibrary.Control Click    File Upload    &Open    [CLASS:Button; INSTANCE:1]    LEFT
+    \    sleep    3s
+    \    Click Element    //button[@class="btn-primary ng-isolate-scope"]
+    \    Wait Until Element Is Not Visible    //button[@class="btn-primary ng-isolate-scope"]
+    \    sleep    5s
 
 *** Keywords ***
 a
