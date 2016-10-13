@@ -164,6 +164,9 @@ create 101 line of chat
     \    Press Key    ${msg text field}    \\13
 
 auto upload profile
+    [Documentation]    This test case is to upload profile picture automatically 100 times. Each time, machine will upload 2 picture.
+    ...
+    ...    Note: May need administrator permission to run since we use AutoItLibrary in this case.
     go to my account page
     global wait
     :FOR    ${i}    IN RANGE    1    450
@@ -189,6 +192,16 @@ auto upload profile
     \    Click Element    //button[@class="btn-primary ng-isolate-scope"]
     \    Wait Until Element Is Not Visible    //button[@class="btn-primary ng-isolate-scope"]
     \    sleep    5s
+
+click up button
+    open paxxioneer
+    open login form from homepage
+    login    100ne    Abc123
+    click function page from dropdown    My Experience
+    ${title 1}    Get Text    //a[@class="ng-binding"]    # get the title of the first activity
+    Click Element    //span[@class="fa fa-arrow-down fa-fw"]    \    # click Down button of the first activity
+    ${new title}    Get Text    //a[@class="ng-binding"]    # get the title of the first activity again
+    Should Not Be Equal    ${title 1}    ${new title}
 
 *** Keywords ***
 a
