@@ -72,6 +72,9 @@ TM003_TC001_Verify paxxioneer account can access Your Booking, My Experience, My
     VERIFY WITH ERROR HANDLE    ${tc_flag}    "Send verification code" button is found    "Send verification code" button is not found
 
 TM003_TC002_Verify paxxioneer can manage activity in My Experience page
+    [Documentation]    This test case just create an activity then verify user could see its name in My Experience page.
+    ...
+    ...    Another cases about delete / change order will be implemented later.
     [Setup]    start paxxioneer with default config
     # wait for paxxioneer launch successfully
     Wait Until Page Contains Element    ${homepage_animated gif}
@@ -100,3 +103,28 @@ TM003_TC002_Verify paxxioneer can manage activity in My Experience page
     ${tc_flag}    Run Keyword And Return Status    Page Should Contain Text    ${tc_experience name 2}
     VERIFY WITH ERROR HANDLE    ${tc_flag}    Experience's title is present    Experience's title is not found
     WRITE MESSAGE TO CONSOLE AND LOG FILE    Verifying done.
+
+TM003_TC003_Verify paxxioneer can edit personal info in My Account, My Profile page
+    # wait for paxxioneer launch successfully
+    Wait Until Page Contains Element    ${homepage_animated gif}
+    # Sign in with Paxxioneer account
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Signing in with a paxxioneer account
+    open login form and login    ${gb_paxxioneer username}    ${gb_password}
+    # Go to My Profile page
+    navigate to page under header menu    My Profile
+    # ============
+    # PROFILE PAGE VERIFYING
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    PROFILE PAGE VERIFYING SECTION. START!
+    # ============
+    # verify element on page
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Check if all main elements of Profile page are presented
+    # ============
+    # look for "Edit My Profile" title
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Looking for "Edit My Profile" text...
+    ${tc_flag}    Run Keyword And Return Status    Page Should Contain Element    ${my profile_edit your profile}
+    VERIFY WITH ERROR HANDLE    ${tc_flag}    Header text of Profile page "Edit My Profile" is found!!!    Header text of Profile page "Edit My Profile" is NOT found
+    # look for background work dropdown list
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Looking for text "Background"
+    ${tc_flag}    Run Keyword And Return Status    Page Should Contain Element    //h3[contains(text(),'Background')]
+    VERIFY WITH ERROR HANDLE    ${tc_flag}    Text "Background" is found!!!    Missing text "Background"
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Looking for text background dropdown list and items under it

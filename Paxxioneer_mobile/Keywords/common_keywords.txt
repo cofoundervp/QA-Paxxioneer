@@ -53,6 +53,7 @@ open login form and login
     Input Text    ${password field}    ${arg_password}
     Click Element    ${login now button}
     global cooldown
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Sign In keyword. Done.
 
 generate username
     ${date}    Get Current Date    result_format=%Y-%m-%d
@@ -91,7 +92,6 @@ navigate to page under header menu
     ...    2. Click ${arg_page name}
     ...
     ...    3. cool down
-    ...
     open or close header menu
     Click Element    //a[contains(text(),'${arg_page name}')]
     global cooldown
