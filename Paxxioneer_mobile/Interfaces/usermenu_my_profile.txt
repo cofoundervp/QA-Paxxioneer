@@ -1,2 +1,21 @@
 *** Variables ***
 ${my profile_edit your profile}    //h2[contains(text(),'Edit My Profile')]
+${my profile_background's dropdown list}    //select[@id="primary_title_field"]
+${my profile_action word text field}    //input[@class="form-control ng-pristine ng-valid ng-valid-maxlength ng-not-empty ng-touched"]
+${my profile_your title label}    //label[contains(text(),'your title?')]
+${my profile_title text field}    //input[@class="input ng-pristine ng-valid ng-empty ng-touched"]
+${my profile_tag name locator}    //span[@class="ng-binding ng-scope" and contains(text(),'tag_name')]    # This is a locator. When using, please replace the text "tag_name" with the real tag name
+${my profile_remove tag button}    //a[@class="remove-button ng-binding ng-scope"]    # Using this element will remove the first tag name
+${my profile_tell people with video header}    //p[contains(text(),'Tell people with videos')]
+${my profile_where do you live label}    //label[@for="video_field_0" and contains(text(),'Where do you live?')]
+${my profile_what is your experience about label about}    //label[@for="video_field_1" and contains(text(),'your experience about')]
+${my profile_what do you inspire the others label}    //label[@for="video_field_2" and contains(text(),'What do you inspire the others?')]
+${my profile_where do you live video fied}    //input[@id="video_field_0"]
+${my profile_what is you experience about video field}    //input[@id="video_field_1"]
+${my profile_what do you inspire the others video field}    //input[@id="video_field_2"]
+${my profile_more video about me lable}    //label[contains(text(),'More video about me')]
+${my profile_more video button}    //span[@class="glyphicon glyphicon-plus"]
+${my profile_cover photo label}    //label[contains(text(),'Cover photos (max. 7 files)')]
+${my profile_drop your photo here box}    //div[contains(text(),'Drop your photos here...')]
+${my profile_select file button}    //input[@type="file" and @uploader="uploader"]    # Click this button to select a image file to upload
+${my profile_submit button}    //button[@type="submit" and contains(text(),'Update')]
