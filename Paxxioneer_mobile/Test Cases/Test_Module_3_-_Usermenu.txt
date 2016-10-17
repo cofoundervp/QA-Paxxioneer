@@ -85,6 +85,18 @@ TM003_TC002_Verify paxxioneer can manage activity in My Experience page
     ${tc_price 1}    random number
     create experience    ${tc_experience name 1}    ${tc_price 1}    Per Day
     navigate to page under header menu    My Experience
+    # verify if the page has exprience 1
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Verify if the page contains experience name 1 (text)
+    ${tc_flag}    Run Keyword And Return Status    Page Should Contain Text    ${tc_experience name 1}
+    VERIFY WITH ERROR HANDLE    ${tc_flag}    Experience's title is present    Experience's title is not found
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Verifying done.
+    #============
     ${tc_experience name 2}    generate experience name
     ${tc_price 2}    random number
     create experience    ${tc_experience name 2}    ${tc_price 2}    Per Day
+    navigate to page under header menu    My Experience
+    # verify if the page has exprience 2
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Verify if the page contains experience name 1 (text)
+    ${tc_flag}    Run Keyword And Return Status    Page Should Contain Text    ${tc_experience name 2}
+    VERIFY WITH ERROR HANDLE    ${tc_flag}    Experience's title is present    Experience's title is not found
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Verifying done.
