@@ -67,7 +67,7 @@ select country city for new experience
     # select type
     Switch To Context    NATIVE_APP
     look for item in a list    ${country name}    ${experience country field}
-    Click Element    //*[@text='${country name}']
+    Comment    Click Element    //*[@text='${country name}']
     global cooldown
     Switch To Context    WEBVIEW_1
     WRITE MESSAGE TO CONSOLE AND LOG FILE    Selecting country, DONE!
@@ -124,10 +124,17 @@ random number
 
 look for item in a list
     [Arguments]    ${item name}    ${list locator}
-    [Documentation]    Looking for the given ${item name} in the given list locator ${list locator}
+    [Documentation]    Looking for and click the given ${item name} in the given list locator ${list locator}
+    ...
+    ...    ${item name} is a String
+    ...
+    ...    ${list locator} is a locator
     WRITE MESSAGE TO CONSOLE AND LOG FILE    Start looking for the given item in the given list
-    :FOR    ${i}    IN RANGE    1    100
+    : FOR    ${i}    IN RANGE    1    100
     \    ${kw_flag}    Run Keyword And Return Status    Page Should Contain Element    //*[@text='${item name}']
+    \    Run Keyword If    '${kw_flag}' == 'True'    WRITE MESSAGE TO CONSOLE AND LOG FILE    Item found!!
+    \    Run Keyword If    '${kw_flag}' == 'True'    Click Element    //*[@text='${item name}']
+    \    Run Keyword If    '${kw_flag}' == 'True'    Switch To Context    WEBVIEW_1
     \    Run Keyword If    '${kw_flag}' == 'True'    Exit For Loop
     \    Run Keyword If    '${kw_flag}' == 'False'    Click Element    //*[contains(@resource-id,'android:id/text1') and @index='7']
     \    global cooldown

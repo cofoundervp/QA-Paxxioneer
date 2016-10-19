@@ -128,3 +128,30 @@ TM003_TC003_Verify paxxioneer can edit personal info in My Account, My Profile p
     ${tc_flag}    Run Keyword And Return Status    Page Should Contain Element    //h3[contains(text(),'Background')]
     VERIFY WITH ERROR HANDLE    ${tc_flag}    Text "Background" is found!!!    Missing text "Background"
     WRITE MESSAGE TO CONSOLE AND LOG FILE    Looking for text background dropdown list and items under it
+    ${tc_flag}    Run Keyword And Return Status    Page Should Contain Element    ${my profile_background's dropdown list}
+    VERIFY WITH ERROR HANDLE    ${tc_flag}    Background dropdown list is found    Background dropdown list is NOT found
+    # ==============
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Click on background dropdown list and verifying items
+    # Run a for loop to look for all background word
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Verifying items under background word dropdown. Loop starting...
+    : FOR    ${j}    IN    @{background word list}
+    \    WRITE MESSAGE TO CONSOLE AND LOG FILE    ${j}
+    \    Click Element    ${my profile_background's dropdown list}
+    \    Switch To Context    NATIVE_APP
+    \    global cooldown
+    \    look for item in a list    ${j}    ${my profile_background's dropdown list}
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Loop end! All items are founded!
+    # ==============
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    Select a background word. Verify background word is updated to profile picture
+    : FOR    ${word}    IN    @{background word list}
+    \    select a background word    ${word}
+    \    Click Element    ${my profile_submit button}
+    \    global cooldown
+    \    verify message popup    Profile updated.
+    \    ${word_short form}    Get From Dictionary    ${D_background_word_long_and_short_form}    ${word}
+    \    ${tc_flag}    Run Keyword And Return Status    Page Should Contain Element    //em[@class="ng-binding ng-scope" and contains(text(),'${word_short form}')]
+    \    VERIFY WITH ERROR HANDLE    ${tc_flag}    Word "${word_short form}" is updated to avatar    Background word on avatar is not updated!!!
+    \    navigate to page under header menu    My Account    # work around by go to another page then turn back in oder to repeat the case
+    \    navigate to page under header menu    My Profile
+    # ==============
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    ====================

@@ -19,3 +19,4 @@ ${my profile_cover photo label}    //label[contains(text(),'Cover photos (max. 7
 ${my profile_drop your photo here box}    //div[contains(text(),'Drop your photos here...')]
 ${my profile_select file button}    //input[@type="file" and @uploader="uploader"]    # Click this button to select a image file to upload
 ${my profile_submit button}    //button[@type="submit" and contains(text(),'Update')]
+${my profile_background word locator}    //option[@label="background_word"]    # This is locator. Using this by replacing text "background_word" with correct text. Correct txt = learning, cooking, touring, flying, diving

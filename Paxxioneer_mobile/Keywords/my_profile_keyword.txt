@@ -1,0 +1,28 @@
+*** Settings ***
+Resource          resource config.txt
+
+*** Keywords ***
+return real locator of background word item
+    [Arguments]    ${arg_background word}
+    [Documentation]    ${background word} = learning / cooking / touring / flying / diving
+    ${true locator of given word}    Replace String    ${my profile_background word locator}    background_word    ${arg_background word}
+    [Return]    ${true locator of given word}
+
+select a background word
+    [Arguments]    ${arg_word}
+    [Documentation]    1. Click background word dropdown list
+    ...
+    ...    2. Change context to Native
+    ...
+    ...    3. Click the word on the popup list
+    ...
+    ...    4. Change context back to Web
+    Click Element    ${my profile_background's dropdown list}
+    Switch To Context    NATIVE_APP
+    global cooldown
+    Click Element    //*[@text='${arg_word}']
+    Switch To Context    WEBVIEW_1
+
+verify background word on avatar
+    [Arguments]    ${arg_long word}    ${arg_short word}
+    Run Keyword If    ${arg_long word} == "learning"    Page Should Contain Element    //em[@class="ng-binding ng-scope" and contains(text(),'${arg_short word}')]

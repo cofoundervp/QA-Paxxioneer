@@ -6,3 +6,6 @@ ${gb_password}    Abc123
 ${gb_customer username}    default_customer_qa_auto
 ${gb_customer email}    default_customer_qa_auto@mailinator.com
 ${gb_paxxioneer username}    default_paxxioneer_qa_auto
+@{background word list}    learning    cooking    touring    flying    diving
+@{background word short form}    learn    cook    tour    fly    dive
+&{D_background_word_long_and_short_form}    learning=learn    cooking=cook    touring=tour    flying=fly    diving=dive

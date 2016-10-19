@@ -1,0 +1,6 @@
+*** Settings ***
+Library           ExtendedSelenium2Library
+
+*** Keywords ***
+scroll
+    [Arguments]    ${element}

@@ -31,9 +31,11 @@ WRITE MESSAGE TO CONSOLE AND LOG FILE
 
 VERIFY WITH ERROR HANDLE
     [Arguments]    ${verify point}    ${message if passed}    ${message if failed}
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    >> VERIFY POINT <<
     Run Keyword If    '${verify point}' == 'True'    WRITE MESSAGE TO CONSOLE AND LOG FILE    ${message if passed}
     Run Keyword If    '${verify point}' == 'True'    Capture Page Screenshot
     Run Keyword If    '${verify point}' == 'False'    Fail    ${message if failed}
+    WRITE MESSAGE TO CONSOLE AND LOG FILE    >> VERIFY POINT EXIT <<
 
 scroll and click
     [Arguments]    ${arg_pilot element}    ${arg_element to click}
@@ -95,3 +97,14 @@ navigate to page under header menu
     open or close header menu
     Click Element    //a[contains(text(),'${arg_page name}')]
     global cooldown
+
+verify message popup
+    [Arguments]    ${expected text}
+    Wait Until Page Contains Element    //div[@class="message ng-binding"]
+    ${kw_flag}    Run Keyword And Return Status    Page Should Contain Element    //div[@class="message ng-binding" and contains(text(),'${expected text}')]
+    VERIFY WITH ERROR HANDLE    ${kw_flag}    Expected text "${expected text}" matched    Expected text not found!!!
+
+scroll to element
+    [Arguments]    ${arg_current element locator}
+    @{cl}    Get Element Location    ${arg_current element locator}
+    Swipe    ${cl}[2]    ${cl}[1]    ${cl}[2]    ${cl}[1]
